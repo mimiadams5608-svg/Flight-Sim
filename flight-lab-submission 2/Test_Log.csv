@@ -1,0 +1,18 @@
+test,type,expected,actual,pass_fail,evidence
+Pause preserves position,automated,state unchanged when paused,state unchanged,PASS,tests.js run in Node (re-run and confirm yourself)
+North increases latitude,automated,lat increases at heading 0,lat increased,PASS,tests.js run in Node
+East increases longitude,automated,lon increases at heading 90,lon increased,PASS,tests.js run in Node
+Heading wraps in both directions,automated,-10→350 and 370→10,as expected,PASS,tests.js run in Node
+Height limits clamp,automated,-5→50 and 8000→5000,as expected,PASS,tests.js run in Node
+Zero speed keeps position,automated,lat unchanged at speed 0,unchanged,PASS,tests.js run in Node
+Duration consistency,automated,1 s step equals ten 0.1 s steps,matched within 1e-8,PASS,tests.js run in Node
+Slow Tour speed (my added check),automated,20 m/s is below default 70 and within 0-250,as expected,PASS,tests.js run in Node
+Break-and-repair: removed "* dt",break-and-repair,Duration consistency should FAIL,Duration consistency FAILED (distance = speed instead of speed*dt),FAIL (intentional),Re-do this yourself and screenshot tests.html
+Break-and-repair: restored "* dt",break-and-repair,All checks pass again,All passed,PASS,Re-do this yourself and screenshot tests.html
+Manual check 1,manual,TODO (copy from Canvas page 6),TODO,TODO,TODO
+Manual check 2,manual,TODO,TODO,TODO,TODO
+Manual check 3,manual,TODO,TODO,TODO,TODO
+Manual check 4,manual,TODO,TODO,TODO,TODO
+Manual check 5,manual,TODO,TODO,TODO,TODO
+Manual check 6,manual,TODO,TODO,TODO,TODO
+Slow Tour button (manual),manual,Click sets speed box to 20 and starts flying with label "Slow Tour",TODO observe in browser,TODO,TODO
