@@ -4,156 +4,73 @@
   // ============================================================
   // CESIUM TOKEN
   // ============================================================
-  // PUT YOUR CESIUM ION TOKEN BETWEEN THE QUOTES.
+
   Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImoxNDJicUlhYlB5Mjd2bDQiLCJqdGkiOiI1OWU3MjBhNC00M2U3LTRiN2QtODcxOC1hYWNkN2JjZjU4ZDAiLCJpZCI6NTA1NzM0LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3OTAxNjk0NTV9.7i8qqGsNYbbkX7JFYb7MSzGlMmybpYPmv5_GRIZlyc8";
 
 
   // ============================================================
-  // FLIGHT STOPS
+  // INTERNSHIP FLIGHT STOPS
   // ============================================================
-  //
-  // THIS IS THE MAIN SECTION YOU CAN EDIT.
-  //
-  // Each stop contains:
-  // name
-  // city
-  // internship
-  // description
-  // longitude
-  // latitude
-  //
-  // IMPORTANT:
-  // Longitude comes FIRST in Cesium.fromDegrees().
-  //
-  // Remote internships are identified in the description.
-  // The map location represents the location associated with
-  // the company/opportunity.
-
 
   const flightStops = [
 
-    // ----------------------------------------------------------
-    // STOP 1 — HUBBELL
-    // ----------------------------------------------------------
-
     {
       name: "Hubbell",
-
       city: "Reading, PA",
-
-      internship:
-        "2027 Engineering / Technology Internship",
-
+      internship: "2027 Engineering / Technology Internship",
       description:
-        "Hubbell offers 2027 internship opportunities in engineering and technology-related areas at its Reading location. This stop represents Hubbell's Reading-area operations.",
-
+        "Hubbell offers 2027 internship opportunities in engineering and technology-related areas at its Reading location.",
       longitude: -75.9387,
-
       latitude: 40.3787
     },
 
-
-    // ----------------------------------------------------------
-    // STOP 2 — PENSKE
-    // ----------------------------------------------------------
-
     {
       name: "Penske Truck Leasing",
-
       city: "Reading, PA",
-
-      internship:
-        "2027 Corporate Internship — Information Systems",
-
+      internship: "2027 Corporate Internship — Information Systems",
       description:
-        "Penske offers a 2027 corporate internship program that includes Information Systems. This stop represents Penske's Reading corporate location.",
-
+        "Penske's 2027 corporate internship program includes Information Systems opportunities. This stop represents Penske's Reading corporate location.",
       longitude: -75.8728,
-
       latitude: 40.3026
     },
 
-
-    // ----------------------------------------------------------
-    // STOP 3 — EAST PENN
-    // ----------------------------------------------------------
-
     {
       name: "East Penn Manufacturing",
-
       city: "Lyon Station, PA",
-
-      internship:
-        "IT Cybersecurity Internship — Summer 2027",
-
+      internship: "IT Cybersecurity Internship — Summer 2027",
       description:
-        "This cybersecurity internship is relevant to Computer Science, cybersecurity, networking, operating systems, and information technology. The position is associated with East Penn Manufacturing in Lyon Station.",
-
+        "This cybersecurity internship is relevant to Computer Science, cybersecurity, networking, operating systems, and information technology.",
       longitude: -76.0037,
-
       latitude: 40.5247
     },
 
-
-    // ----------------------------------------------------------
-    // STOP 4 — MATERION
-    // ----------------------------------------------------------
-
     {
       name: "Materion",
-
       city: "Leesport, PA",
-
-      internship:
-        "2027 Summer Internship Program",
-
+      internship: "2027 Summer Internship Program",
       description:
-        "Materion's 2027 internship program includes opportunities related to Information Technology, Computer Science, and Data Science. This stop represents the Materion location associated with the internship opportunity.",
-
+        "Materion's 2027 internship program includes opportunities related to Information Technology, Computer Science, and Data Science.",
       longitude: -75.9685,
-
       latitude: 40.4498
     },
 
-
-    // ----------------------------------------------------------
-    // STOP 5 — FREDDIE MAC
-    // ----------------------------------------------------------
-
     {
       name: "Freddie Mac",
-
       city: "Reading, PA",
-
-      internship:
-        "Technology Summer Internship — 2027",
-
+      internship: "Technology Summer Internship — 2027",
       description:
-        "This is a remote technology internship opportunity related to areas such as software, applications, data, cybersecurity, and information technology. The flight stop represents the Reading-area location listed for the opportunity.",
-
+        "This is a remote technology internship opportunity related to software, applications, data, cybersecurity, and information technology. The flight stop represents the Reading-area location associated with the opportunity.",
       longitude: -75.9269,
-
       latitude: 40.3356
     },
 
-
-    // ----------------------------------------------------------
-    // STOP 6 — WORLD WIDE TECHNOLOGY
-    // ----------------------------------------------------------
-
     {
       name: "World Wide Technology",
-
       city: "Reading, PA",
-
-      internship:
-        "2027 Solutions, Consulting & Engineering Internship",
-
+      internship: "2027 Solutions, Consulting & Engineering Internship",
       description:
-        "This is a remote technology internship opportunity with areas including Computer Science, cybersecurity, data science, information technology, and software engineering. The flight stop represents the Reading-area location associated with the opportunity.",
-
+        "This is a remote technology internship opportunity involving areas such as Computer Science, cybersecurity, data science, information technology, and software engineering. The flight stop represents the Reading-area location associated with the opportunity.",
       longitude: -75.9269,
-
       latitude: 40.3356
     }
 
@@ -161,147 +78,106 @@
 
 
   // ============================================================
-  // SIMULATOR SETTINGS
+  // FLIGHT SETTINGS
   // ============================================================
 
   const START_LOCATION = {
-
     longitude: -75.9300,
-
     latitude: 40.3300
-
   };
-
-
-  // Height of the aircraft above the ground.
 
   const FLIGHT_HEIGHT = 1200;
 
-
-  // Speed of the aircraft.
-
   const FLIGHT_SPEED = 0.00065;
 
-
-  // Distance required to trigger a stop.
-
   const ARRIVAL_DISTANCE = 0.00065;
-
-
-  // How long the plane waits at each company.
 
   const STOP_TIME = 5000;
 
 
-
   // ============================================================
-  // CREATE CESIUM VIEWER
+  // CESIUM GLOBE
   // ============================================================
+  //
+  // IMPORTANT:
+  // This keeps the REAL WORLD terrain.
+  //
 
   const viewer = new Cesium.Viewer(
     "cesiumContainer",
     {
-
-      // --------------------------------------------------------
-      // REAL WORLD 3D TERRAIN
-      // --------------------------------------------------------
-
-      terrain:
-        Cesium.Terrain.fromWorldTerrain(),
-
+      terrain: Cesium.Terrain.fromWorldTerrain(),
 
       animation: false,
-
       timeline: false,
 
       baseLayerPicker: false,
-
       geocoder: false,
 
       homeButton: true,
-
       sceneModePicker: true,
-
       navigationHelpButton: false,
 
       selectionIndicator: true,
-
       infoBox: true
-
     }
   );
-
 
 
   // ============================================================
   // REAL WORLD IMAGERY
   // ============================================================
   //
-  // This replaces the plain blue/grid appearance with
-  // real-world imagery.
+  // This is what prevents the globe from being just blue.
   //
-  // Cesium World Imagery is provided through Cesium ion.
-
 
   try {
 
     const imageryProvider =
-      await Cesium.createWorldImageryAsync({
-
-        style:
-          Cesium.IonWorldImageryStyle.AERIAL_WITH_LABELS
-
-      });
-
+      await Cesium.createWorldImageryAsync();
 
     viewer.imageryLayers.addImageryProvider(
       imageryProvider
     );
 
-
   } catch (error) {
 
     console.error(
-      "World imagery could not be loaded:",
+      "Could not load Cesium World Imagery:",
       error
     );
 
   }
-
 
 
   // ============================================================
   // REAL 3D BUILDINGS
   // ============================================================
   //
-  // This loads real-world 3D buildings from Cesium OSM
-  // Buildings.
-
+  // This adds actual buildings to the globe.
+  //
 
   try {
 
     const buildings =
       await Cesium.createOsmBuildingsAsync();
 
-
     viewer.scene.primitives.add(
       buildings
     );
 
-
   } catch (error) {
 
     console.error(
-      "3D buildings could not be loaded:",
+      "Could not load 3D buildings:",
       error
     );
 
   }
 
 
-
   // ============================================================
-  // TERRAIN VISUAL SETTINGS
+  // TERRAIN SETTINGS
   // ============================================================
 
   viewer.scene.globe.depthTestAgainstTerrain = true;
@@ -309,7 +185,6 @@
   viewer.scene.globe.enableLighting = true;
 
   viewer.scene.skyAtmosphere.show = true;
-
 
 
   // ============================================================
@@ -322,30 +197,17 @@
   flightStops.forEach(
     (stop, index) => {
 
-
       const entity =
         viewer.entities.add({
 
           name: stop.name,
 
-
-          // Company marker location
-
           position:
             Cesium.Cartesian3.fromDegrees(
-
               stop.longitude,
-
               stop.latitude,
-
               30
-
             ),
-
-
-          // ----------------------------------------------------
-          // ORANGE COMPANY MARKER
-          // ----------------------------------------------------
 
           point: {
 
@@ -362,13 +224,8 @@
             heightReference:
               Cesium.HeightReference
                 .CLAMP_TO_GROUND
-
           },
 
-
-          // ----------------------------------------------------
-          // COMPANY NAME
-          // ----------------------------------------------------
 
           label: {
 
@@ -402,13 +259,8 @@
             heightReference:
               Cesium.HeightReference
                 .CLAMP_TO_GROUND
-
           },
 
-
-          // ----------------------------------------------------
-          // COMPANY INFORMATION
-          // ----------------------------------------------------
 
           description: `
 
@@ -418,9 +270,7 @@
               min-width: 270px;
             ">
 
-              <h2 style="
-                margin-top:0;
-              ">
+              <h2>
                 ${index + 1}. ${stop.name}
               </h2>
 
@@ -441,21 +291,17 @@
             </div>
 
           `
-
         });
 
 
-      stopEntities.push(
-        entity
-      );
+      stopEntities.push(entity);
 
     }
   );
 
 
-
   // ============================================================
-  // CREATE AIRCRAFT
+  // AIRCRAFT
   // ============================================================
 
   const aircraft =
@@ -464,22 +310,12 @@
       name:
         "Flight Simulator Aircraft",
 
-
       position:
         Cesium.Cartesian3.fromDegrees(
-
           START_LOCATION.longitude,
-
           START_LOCATION.latitude,
-
           FLIGHT_HEIGHT
-
         ),
-
-
-      // --------------------------------------------------------
-      // YELLOW AIRCRAFT
-      // --------------------------------------------------------
 
       point: {
 
@@ -495,15 +331,9 @@
 
       },
 
-
-      // --------------------------------------------------------
-      // AIRCRAFT LABEL
-      // --------------------------------------------------------
-
       label: {
 
-        text:
-          "Aircraft",
+        text: "Aircraft",
 
         font:
           "bold 14px sans-serif",
@@ -534,7 +364,6 @@
     });
 
 
-
   // ============================================================
   // FLIGHT STATE
   // ============================================================
@@ -551,42 +380,29 @@
   let stopTimer = null;
 
 
-
   // ============================================================
-  // DISTANCE FUNCTION
+  // DISTANCE
   // ============================================================
 
   function distanceBetween(
-
     longitude1,
-
     latitude1,
-
     longitude2,
-
     latitude2
-
   ) {
 
     const dx =
-      longitude2 -
-      longitude1;
-
+      longitude2 - longitude1;
 
     const dy =
-      latitude2 -
-      latitude1;
-
+      latitude2 - latitude1;
 
     return Math.sqrt(
-
       dx * dx +
       dy * dy
-
     );
 
   }
-
 
 
   // ============================================================
@@ -597,14 +413,11 @@
     deltaTime
   ) {
 
-
     if (
       flightPaused ||
       flightFinished
     ) {
-
       return;
-
     }
 
 
@@ -625,41 +438,30 @@
 
     const currentCartesian =
       aircraft.position.getValue(
-
         Cesium.JulianDate.now()
-
       );
 
 
     if (!currentCartesian) {
-
       return;
-
     }
 
 
     const currentCartographic =
-      Cesium.Cartographic
-        .fromCartesian(
-          currentCartesian
-        );
+      Cesium.Cartographic.fromCartesian(
+        currentCartesian
+      );
 
 
     const currentLongitude =
       Cesium.Math.toDegrees(
-
-        currentCartographic
-          .longitude
-
+        currentCartographic.longitude
       );
 
 
     const currentLatitude =
       Cesium.Math.toDegrees(
-
-        currentCartographic
-          .latitude
-
+        currentCartographic.latitude
       );
 
 
@@ -667,51 +469,42 @@
       distanceBetween(
 
         currentLongitude,
-
         currentLatitude,
 
         target.longitude,
-
         target.latitude
 
       );
 
 
-
-    // ========================================================
-    // ARRIVED AT COMPANY
-    // ========================================================
+    // ----------------------------------------------------------
+    // ARRIVED
+    // ----------------------------------------------------------
 
     if (
       distance <=
       ARRIVAL_DISTANCE
     ) {
 
-
       aircraft.position =
         Cesium.Cartesian3.fromDegrees(
 
           target.longitude,
-
           target.latitude,
-
           FLIGHT_HEIGHT
 
         );
 
-
       arriveAtStop();
-
 
       return;
 
     }
 
 
-
-    // ========================================================
-    // MOVE TOWARD COMPANY
-    // ========================================================
+    // ----------------------------------------------------------
+    // MOVE
+    // ----------------------------------------------------------
 
     const step =
       FLIGHT_SPEED *
@@ -720,35 +513,26 @@
 
     const ratio =
       Math.min(
-
         step / distance,
-
         1
-
       );
 
 
     const newLongitude =
-
       currentLongitude +
-
       (
         target.longitude -
         currentLongitude
       ) *
-
       ratio;
 
 
     const newLatitude =
-
       currentLatitude +
-
       (
         target.latitude -
         currentLatitude
       ) *
-
       ratio;
 
 
@@ -756,9 +540,7 @@
       Cesium.Cartesian3.fromDegrees(
 
         newLongitude,
-
         newLatitude,
-
         FLIGHT_HEIGHT
 
       );
@@ -766,13 +548,11 @@
   }
 
 
-
   // ============================================================
   // ARRIVE AT STOP
   // ============================================================
 
   function arriveAtStop() {
-
 
     flightPaused = true;
 
@@ -795,25 +575,16 @@
       ];
 
 
-
-    // ----------------------------------------------------------
-    // FLY CAMERA TO COMPANY
-    // ----------------------------------------------------------
-
     viewer.camera.flyTo({
 
       destination:
-
         Cesium.Cartesian3.fromDegrees(
 
           stop.longitude,
-
           stop.latitude,
-
           3500
 
         ),
-
 
       orientation: {
 
@@ -827,51 +598,34 @@
 
       },
 
-
       duration: 2
 
     });
 
 
+    showStopPanel(stop);
 
-    showStopPanel(
-      stop
-    );
-
-
-    // ----------------------------------------------------------
-    // AUTOMATICALLY CONTINUE
-    // ----------------------------------------------------------
 
     stopTimer =
       setTimeout(
-
         () => {
-
           continueToNextStop();
-
         },
-
         STOP_TIME
-
       );
 
   }
 
 
-
   // ============================================================
-  // CONTINUE TO NEXT STOP
+  // NEXT STOP
   // ============================================================
 
   function continueToNextStop() {
 
-
     if (stopTimer) {
 
-      clearTimeout(
-        stopTimer
-      );
+      clearTimeout(stopTimer);
 
       stopTimer = null;
 
@@ -912,17 +666,13 @@
     viewer.camera.flyTo({
 
       destination:
-
         Cesium.Cartesian3.fromDegrees(
 
           nextStop.longitude,
-
           nextStop.latitude,
-
           10000
 
         ),
-
 
       orientation: {
 
@@ -936,7 +686,6 @@
 
       },
 
-
       duration: 2
 
     });
@@ -944,35 +693,29 @@
   }
 
 
-
   // ============================================================
-  // FINISH FLIGHT
+  // FINISH
   // ============================================================
 
   function finishFlight() {
-
 
     flightFinished = true;
 
     flightPaused = true;
 
-
     aircraft.label.text =
       "FLIGHT COMPLETE";
-
 
     showCompletionPanel();
 
   }
 
 
-
   // ============================================================
-  // CREATE INFORMATION PANEL
+  // PANEL
   // ============================================================
 
   function createPanel() {
-
 
     let panel =
       document.getElementById(
@@ -981,16 +724,12 @@
 
 
     if (panel) {
-
       return panel;
-
     }
 
 
     panel =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
 
     panel.id =
@@ -1000,42 +739,32 @@
     panel.style.position =
       "absolute";
 
-
     panel.style.top =
       "20px";
-
 
     panel.style.left =
       "20px";
 
-
     panel.style.width =
       "300px";
 
-
     panel.style.background =
-      "rgba(0, 0, 0, 0.82)";
-
+      "rgba(0,0,0,0.82)";
 
     panel.style.color =
       "white";
 
-
     panel.style.padding =
       "18px";
-
 
     panel.style.borderRadius =
       "12px";
 
-
     panel.style.fontFamily =
-      "Arial, sans-serif";
-
+      "Arial,sans-serif";
 
     panel.style.zIndex =
       "1000";
-
 
     panel.style.display =
       "none";
@@ -1051,15 +780,11 @@
   }
 
 
-
   // ============================================================
-  // SHOW COMPANY PANEL
+  // SHOW STOP
   // ============================================================
 
-  function showStopPanel(
-    stop
-  ) {
-
+  function showStopPanel(stop) {
 
     const panel =
       createPanel();
@@ -1075,7 +800,6 @@
         font-size:12px;
         text-transform:uppercase;
         opacity:.7;
-        margin-bottom:5px;
       ">
 
         Flight Stop
@@ -1086,17 +810,13 @@
       </div>
 
 
-      <h2 style="
-        margin:0 0 8px 0;
-      ">
-
+      <h2>
         ${stop.name}
-
       </h2>
 
 
       <div style="
-        margin-bottom:8px;
+        margin-bottom:10px;
         opacity:.85;
       ">
 
@@ -1123,7 +843,6 @@
       <div style="
         font-size:13px;
         line-height:1.4;
-        opacity:.9;
       ">
 
         ${stop.description}
@@ -1156,23 +875,18 @@
         "continueFlightButton"
       )
       .addEventListener(
-
         "click",
-
         continueToNextStop
-
       );
 
   }
 
 
-
   // ============================================================
-  // HIDE COMPANY PANEL
+  // HIDE PANEL
   // ============================================================
 
   function hideStopPanel() {
-
 
     const panel =
       document.getElementById(
@@ -1190,13 +904,11 @@
   }
 
 
-
   // ============================================================
-  // COMPLETION PANEL
+  // COMPLETE PANEL
   // ============================================================
 
   function showCompletionPanel() {
-
 
     const panel =
       createPanel();
@@ -1224,14 +936,10 @@
       </h2>
 
 
-      <p style="
-        line-height:1.5;
-      ">
-
+      <p>
         You have completed all
         ${flightStops.length}
         internship stops.
-
       </p>
 
 
@@ -1260,23 +968,18 @@
         "restartFlightButton"
       )
       .addEventListener(
-
         "click",
-
         restartFlight
-
       );
 
   }
 
 
-
   // ============================================================
-  // RESTART FLIGHT
+  // RESTART
   // ============================================================
 
   function restartFlight() {
-
 
     if (stopTimer) {
 
@@ -1291,9 +994,7 @@
 
     currentStopIndex = 0;
 
-
     flightPaused = false;
-
 
     flightFinished = false;
 
@@ -1302,9 +1003,7 @@
       Cesium.Cartesian3.fromDegrees(
 
         START_LOCATION.longitude,
-
         START_LOCATION.latitude,
-
         FLIGHT_HEIGHT
 
       );
@@ -1317,21 +1016,16 @@
     hideStopPanel();
 
 
-
     viewer.camera.flyTo({
 
       destination:
-
         Cesium.Cartesian3.fromDegrees(
 
           START_LOCATION.longitude,
-
           START_LOCATION.latitude,
-
           12000
 
         ),
-
 
       orientation: {
 
@@ -1345,7 +1039,6 @@
 
       },
 
-
       duration: 2
 
     });
@@ -1353,25 +1046,20 @@
   }
 
 
-
   // ============================================================
-  // INITIAL CAMERA
+  // STARTING CAMERA
   // ============================================================
 
   viewer.camera.flyTo({
 
     destination:
-
       Cesium.Cartesian3.fromDegrees(
 
         START_LOCATION.longitude,
-
         START_LOCATION.latitude,
-
         12000
 
       ),
-
 
     orientation: {
 
@@ -1385,20 +1073,17 @@
 
     },
 
-
     duration: 2
 
   });
 
 
-
   // ============================================================
-  // MAIN FLIGHT LOOP
+  // FLIGHT LOOP
   // ============================================================
 
   viewer.clock.onTick.addEventListener(
     () => {
-
 
       const now =
         performance.now();
@@ -1426,9 +1111,8 @@
   );
 
 
-
   // ============================================================
-  // CLICK COMPANY MARKERS
+  // CLICKING COMPANY MARKERS
   // ============================================================
 
   viewer
@@ -1437,7 +1121,6 @@
 
       function (click) {
 
-
         const picked =
           viewer.scene.pick(
             click.position
@@ -1445,15 +1128,9 @@
 
 
         if (
-
-          Cesium.defined(
-            picked
-          ) &&
-
+          Cesium.defined(picked) &&
           picked.id
-
         ) {
-
 
           viewer.selectedEntity =
             picked.id;
@@ -1461,7 +1138,6 @@
         }
 
       },
-
 
       Cesium
         .ScreenSpaceEventType
