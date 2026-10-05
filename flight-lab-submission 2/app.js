@@ -104,7 +104,7 @@
   //
 
   const viewer = new Cesium.Viewer(
-    "cesiumContainer",
+    "globe",
     {
       terrain: Cesium.Terrain.fromWorldTerrain(),
 
