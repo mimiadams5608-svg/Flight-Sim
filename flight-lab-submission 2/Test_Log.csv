@@ -1,5 +1,5 @@
 test,type,expected,actual,pass_fail,evidence
-Pause preserves position,automated,state unchanged when paused,state unchanged,PASS,tests.js run in Node (re-run and confirm yourself)
+Pause preserves position,automated,state unchanged when paused,state unchanged,PASS,tests.js run in Node 
 North increases latitude,automated,lat increases at heading 0,lat increased,PASS,tests.js run in Node
 East increases longitude,automated,lon increases at heading 90,lon increased,PASS,tests.js run in Node
 Heading wraps in both directions,automated,-10→350 and 370→10,as expected,PASS,tests.js run in Node
@@ -7,12 +7,12 @@ Height limits clamp,automated,-5→50 and 8000→5000,as expected,PASS,tests.js 
 Zero speed keeps position,automated,lat unchanged at speed 0,unchanged,PASS,tests.js run in Node
 Duration consistency,automated,1 s step equals ten 0.1 s steps,matched within 1e-8,PASS,tests.js run in Node
 Slow Tour speed (my added check),automated,20 m/s is below default 70 and within 0-250,as expected,PASS,tests.js run in Node
-Break-and-repair: removed "* dt",break-and-repair,Duration consistency should FAIL,Duration consistency FAILED (distance = speed instead of speed*dt),FAIL (intentional),Re-do this yourself and screenshot tests.html
-Break-and-repair: restored "* dt",break-and-repair,All checks pass again,All passed,PASS,Re-do this yourself and screenshot tests.html
-Manual check 1,manual,TODO (copy from Canvas page 6),TODO,TODO,TODO
-Manual check 2,manual,TODO,TODO,TODO,TODO
-Manual check 3,manual,TODO,TODO,TODO,TODO
-Manual check 4,manual,TODO,TODO,TODO,TODO
-Manual check 5,manual,TODO,TODO,TODO,TODO
-Manual check 6,manual,TODO,TODO,TODO,TODO
-Slow Tour button (manual),manual,Click sets speed box to 20 and starts flying with label "Slow Tour",TODO observe in browser,TODO,TODO
+Break-and-repair: removed "* dt",break-and-repair,Duration consistency should FAIL,Duration consistency FAILED (distance = speed instead of speed*dt),FAIL (intentional),Broken Screenshot.png
+Break-and-repair: restored "* dt",break-and-repair,All checks pass again,All passed,PASS,Correct test.png
+Manual check 1,manual,Fly, Pause, wait 5 s: longitude, latitude and height readout unchanged,After Pause, readout was Lat 40.33078, Height 500 m. Still identical 5 seconds later.,PASS,Pause Screenshot.png
+Manual check 2,manual,'Reset, click Right 9 times: heading reads 90 degrees; Fly moves east (longitude rises, latitude about the same)',Heading reads 90 after clicking right nine times and longitude rises,PASS,Turn Screenshot.png
+Manual check 3,manual,Heading 0, same duration (e.g. 10 s) at 30 then 60 m/s (Reset between runs): latitude gain at 60 is about 2x the gain at 30 (about 0.0027 vs 0.0054 deg),speed at 30 - L:40.33290 | Speed at 60 - L: 40.33561,PASS,Speed ScreenShot.png
+Manual check 4,manual,After moving and changing settings, Reset: lon -75.93, lat 40.33, height 500, speed 70, heading 0, paused,Everything returned to orginal postion,PASS,Rest Screenshot.png
+Manual check 5,manual,Height 10 becomes 50 and height 9000 becomes 5000 (press Enter or Tab after typing),Both went back to 5000,PASS,Limit 1.png & Limit 2.png
+Manual check 6,manual,Click Slow Tour: speed box becomes 20, dot starts moving, label says Slow Tour; in 10 s latitude gain is about 0.0018 deg,PASS,dot moved at a slow pace; Reset returned speed to 70Slow Tour.png
+
