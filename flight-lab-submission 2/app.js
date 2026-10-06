@@ -43,67 +43,67 @@
   // FLIGHT STOPS
   // =========================
 
-  const flightStops = [
-    {
-      name: "Hubbell",
-      city: "Reading, PA",
-      internship: "2027 Engineering / Technology Internship",
-      description:
-        "Hubbell offers 2027 internship opportunities in engineering and technology-related areas at its Reading location.",
-      longitude: -75.9387,
-      latitude: 40.3787
-    },
+ const flightStops = [
+  {
+    name: "Penske Truck Leasing",
+    city: "Reading, PA",
+    internship: "2027 Corporate Internship — Information Systems",
+    description:
+      "Penske Truck Leasing's 2027 Corporate Internship program includes opportunities in Information Systems. This internship is a strong fit for Computer Science students interested in technology, information systems, business technology, and using technology to support a large organization. The flight stop represents Penske's Reading corporate location.",
+    longitude: -75.8728,
+    latitude: 40.3026
+  },
 
-    {
-      name: "Penske Truck Leasing",
-      city: "Reading, PA",
-      internship: "2027 Corporate Internship — Information Systems",
-      description:
-        "Penske's 2027 corporate internship program includes Information Systems opportunities. This stop represents Penske's Reading corporate location.",
-      longitude: -75.8728,
-      latitude: 40.3026
-    },
+  {
+    name: "Hubbell",
+    city: "Reading, PA",
+    internship: "2027 Engineering / Technology Internship",
+    description:
+      "Hubbell offers 2027 internship opportunities in engineering and technology-related areas. Students in Computer Science and related technology fields can gain experience applying technical and problem-solving skills in a professional environment. This flight stop represents Hubbell's Reading-area location.",
+    longitude: -75.9387,
+    latitude: 40.3787
+  },
 
-    {
-      name: "East Penn Manufacturing",
-      city: "Lyon Station, PA",
-      internship: "IT Cybersecurity Internship — Summer 2027",
-      description:
-        "This cybersecurity internship is relevant to Computer Science, cybersecurity, networking, operating systems, and information technology.",
-      longitude: -76.0037,
-      latitude: 40.5247
-    },
+  {
+    name: "Freddie Mac",
+    city: "Remote",
+    internship: "Technology Summer Internship — 2027",
+    description:
+      "This is a remote technology internship opportunity involving areas such as software, applications, data, cybersecurity, and information technology. It provides an opportunity for students interested in Computer Science to gain experience working with technology in a professional financial-services environment. The aircraft travels to the location represented by the internship stop, while the internship itself is remote.",
+    longitude: -75.9269,
+    latitude: 40.3356
+  },
 
-    {
-      name: "Materion",
-      city: "Leesport, PA",
-      internship: "2027 Summer Internship Program",
-      description:
-        "Materion's 2027 internship program includes opportunities related to Information Technology, Computer Science, and Data Science.",
-      longitude: -75.9685,
-      latitude: 40.4498
-    },
+  {
+    name: "World Wide Technology",
+    city: "Remote",
+    internship: "2027 Solutions, Consulting & Engineering Internship",
+    description:
+      "This remote technology internship provides opportunities to work with areas such as Computer Science, cybersecurity, data science, information technology, solutions, consulting, and software engineering. It is designed for students interested in applying technical knowledge to real-world technology projects. The internship is remote, while the flight marker represents the location used for this stop.",
+    longitude: -75.9269,
+    latitude: 40.3356
+  },
 
-    {
-      name: "Freddie Mac",
-      city: "Reading, PA",
-      internship: "Technology Summer Internship — 2027",
-      description:
-        "This is a remote technology internship opportunity related to software, applications, data, cybersecurity, and information technology. The flight stop represents the Reading-area location associated with the opportunity.",
-      longitude: -75.9269,
-      latitude: 40.3356
-    },
+  {
+    name: "Materion",
+    city: "Leesport, PA",
+    internship: "2027 Summer Internship Program",
+    description:
+      "Materion's 2027 Summer Internship Program includes opportunities connected to Information Technology, Computer Science, and Data Science. This stop is useful for students interested in applying programming, data, technology, and problem-solving skills in a professional setting. The flight stop represents Materion's Leesport-area location.",
+    longitude: -75.9685,
+    latitude: 40.4498
+  },
 
-    {
-      name: "World Wide Technology",
-      city: "Reading, PA",
-      internship: "2027 Solutions, Consulting & Engineering Internship",
-      description:
-        "This is a remote technology internship opportunity involving areas such as Computer Science, cybersecurity, data science, information technology, and software engineering. The flight stop represents the Reading-area location associated with the opportunity.",
-      longitude: -75.9269,
-      latitude: 40.3356
-    }
-  ];
+  {
+    name: "East Penn Manufacturing",
+    city: "Lyon Station, PA",
+    internship: "IT Cybersecurity Internship — Summer 2027",
+    description:
+      "East Penn Manufacturing offers an IT cybersecurity internship focused on areas relevant to Computer Science and information technology. Students can explore cybersecurity, networking, operating systems, and other technical concepts while gaining professional experience. The flight stop represents East Penn Manufacturing's Lyon Station location.",
+    longitude: -76.0037,
+    latitude: 40.5247
+  }
+];
 
 
   // =========================
