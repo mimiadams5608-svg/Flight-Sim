@@ -1,19 +1,49 @@
 (async () => {
   "use strict";
 
-  // ============================================================
-  // CESIUM TOKEN
-  // ============================================================
+  // =========================
+  // CESIUM SETUP
+  // =========================
 
   Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImoxNDJicUlhYlB5Mjd2bDQiLCJqdGkiOiI1OWU3MjBhNC00M2U3LTRiN2QtODcxOC1hYWNkN2JjZjU4ZDAiLCJpZCI6NTA1NzM0LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3OTAxNjk0NTV9.7i8qqGsNYbbkX7JFYb7MSzGlMmybpYPmv5_GRIZlyc8";
 
+  const viewer = new Cesium.Viewer("globe", {
+    terrain: Cesium.Terrain.fromWorldTerrain(),
+    animation: false,
+    timeline: false,
+    baseLayerPicker: false,
+    geocoder: false,
+    homeButton: true,
+    sceneModePicker: true,
+    navigationHelpButton: false,
+    selectionIndicator: true,
+    infoBox: true
+  });
 
-  // ============================================================
-  // INTERNSHIP FLIGHT STOPS
-  // ============================================================
+  try {
+    const imageryProvider = await Cesium.createWorldImageryAsync();
+    viewer.imageryLayers.addImageryProvider(imageryProvider);
+  } catch (error) {
+    console.error("Could not load Cesium World Imagery:", error);
+  }
+
+  try {
+    const buildings = await Cesium.createOsmBuildingsAsync();
+    viewer.scene.primitives.add(buildings);
+  } catch (error) {
+    console.error("Could not load 3D buildings:", error);
+  }
+
+  viewer.scene.globe.depthTestAgainstTerrain = true;
+  viewer.scene.globe.enableLighting = true;
+  viewer.scene.skyAtmosphere.show = true;
+
+
+  // =========================
+  // FLIGHT STOPS
+  // =========================
 
   const flightStops = [
-
     {
       name: "Hubbell",
       city: "Reading, PA",
@@ -73,1076 +103,491 @@
       longitude: -75.9269,
       latitude: 40.3356
     }
-
   ];
 
 
-  // ============================================================
+  // =========================
   // FLIGHT SETTINGS
-  // ============================================================
+  // =========================
 
   const START_LOCATION = {
     longitude: -75.9300,
     latitude: 40.3300
   };
 
+  // Height of aircraft
   const FLIGHT_HEIGHT = 1200;
 
-  const FLIGHT_SPEED = 0.00065;
+  // Slower than the previous version
+  // Smaller number = slower movement
+  const FLIGHT_SPEED = 0.00012;
 
-  const ARRIVAL_DISTANCE = 0.00065;
+  // Distance at which the aircraft considers
+  // itself to have reached a stop
+  const ARRIVAL_DISTANCE = 0.00035;
 
+  // How long to pause at each company
   const STOP_TIME = 5000;
 
 
-  // ============================================================
-  // CESIUM GLOBE
-  // ============================================================
-  //
-  // IMPORTANT:
-  // This keeps the REAL WORLD terrain.
-  //
+  // =========================
+  // STATUS MESSAGE
+  // =========================
 
-  const viewer = new Cesium.Viewer(
-    "globe",
-    {
-      terrain: Cesium.Terrain.fromWorldTerrain(),
+  const message = document.getElementById("message");
 
-      animation: false,
-      timeline: false,
-
-      baseLayerPicker: false,
-      geocoder: false,
-
-      homeButton: true,
-      sceneModePicker: true,
-      navigationHelpButton: false,
-
-      selectionIndicator: true,
-      infoBox: true
-    }
-  );
-
-
-  // ============================================================
-  // REAL WORLD IMAGERY
-  // ============================================================
-  //
-  // This is what prevents the globe from being just blue.
-  //
-
-  try {
-
-    const imageryProvider =
-      await Cesium.createWorldImageryAsync();
-
-    viewer.imageryLayers.addImageryProvider(
-      imageryProvider
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Could not load Cesium World Imagery:",
-      error
-    );
-
+  if (message) {
+    message.textContent = "Flight simulator ready.";
   }
 
 
-  // ============================================================
-  // REAL 3D BUILDINGS
-  // ============================================================
-  //
-  // This adds actual buildings to the globe.
-  //
-
-  try {
-
-    const buildings =
-      await Cesium.createOsmBuildingsAsync();
-
-    viewer.scene.primitives.add(
-      buildings
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Could not load 3D buildings:",
-      error
-    );
-
-  }
-
-
-  // ============================================================
-  // TERRAIN SETTINGS
-  // ============================================================
-
-  viewer.scene.globe.depthTestAgainstTerrain = true;
-
-  viewer.scene.globe.enableLighting = true;
-
-  viewer.scene.skyAtmosphere.show = true;
-
-
-  // ============================================================
+  // =========================
   // COMPANY MARKERS
-  // ============================================================
+  // =========================
 
-  const stopEntities = [];
+  const companyEntities = [];
 
+  flightStops.forEach((stop, index) => {
 
-  flightStops.forEach(
-    (stop, index) => {
-
-      const entity =
-        viewer.entities.add({
-
-          name: stop.name,
-
-          position:
-            Cesium.Cartesian3.fromDegrees(
-              stop.longitude,
-              stop.latitude,
-              30
-            ),
-
-          point: {
-
-            pixelSize: 15,
-
-            color:
-              Cesium.Color.ORANGE,
-
-            outlineColor:
-              Cesium.Color.WHITE,
-
-            outlineWidth: 3,
-
-            heightReference:
-              Cesium.HeightReference
-                .CLAMP_TO_GROUND
-          },
-
-
-          label: {
-
-            text:
-              `${index + 1}. ${stop.name}`,
-
-            font:
-              "bold 15px sans-serif",
-
-            fillColor:
-              Cesium.Color.WHITE,
-
-            outlineColor:
-              Cesium.Color.BLACK,
-
-            outlineWidth: 4,
-
-            style:
-              Cesium.LabelStyle
-                .FILL_AND_OUTLINE,
-
-            verticalOrigin:
-              Cesium.VerticalOrigin.BOTTOM,
-
-            pixelOffset:
-              new Cesium.Cartesian2(
-                0,
-                -20
-              ),
-
-            heightReference:
-              Cesium.HeightReference
-                .CLAMP_TO_GROUND
-          },
-
-
-          description: `
-
-            <div style="
-              font-family: Arial, sans-serif;
-              padding: 8px;
-              min-width: 270px;
-            ">
-
-              <h2>
-                ${index + 1}. ${stop.name}
-              </h2>
-
-              <p>
-                <strong>Location:</strong>
-                ${stop.city}
-              </p>
-
-              <p>
-                <strong>Internship:</strong>
-                ${stop.internship}
-              </p>
-
-              <p>
-                ${stop.description}
-              </p>
-
-            </div>
-
-          `
-        });
-
-
-      stopEntities.push(entity);
-
-    }
-  );
-
-
-  // ============================================================
-  // AIRCRAFT
-  // ============================================================
-
-  const aircraft =
-    viewer.entities.add({
-
-      name:
-        "Flight Simulator Aircraft",
-
-      position:
-        Cesium.Cartesian3.fromDegrees(
-          START_LOCATION.longitude,
-          START_LOCATION.latitude,
-          FLIGHT_HEIGHT
-        ),
+    const entity = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(
+        stop.longitude,
+        stop.latitude,
+        0
+      ),
 
       point: {
-
-        pixelSize: 18,
-
-        color:
-          Cesium.Color.YELLOW,
-
-        outlineColor:
-          Cesium.Color.BLACK,
-
-        outlineWidth: 3
-
+        pixelSize: 13,
+        color: Cesium.Color.ORANGE,
+        outlineColor: Cesium.Color.WHITE,
+        outlineWidth: 2
       },
 
       label: {
+        text: `${index + 1}. ${stop.name}`,
+        font: "bold 15px sans-serif",
+        fillColor: Cesium.Color.WHITE,
+        outlineColor: Cesium.Color.BLACK,
+        outlineWidth: 4,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        pixelOffset: new Cesium.Cartesian2(0, -15),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY
+      },
 
-        text: "Aircraft",
-
-        font:
-          "bold 14px sans-serif",
-
-        fillColor:
-          Cesium.Color.YELLOW,
-
-        outlineColor:
-          Cesium.Color.BLACK,
-
-        outlineWidth: 3,
-
-        style:
-          Cesium.LabelStyle
-            .FILL_AND_OUTLINE,
-
-        verticalOrigin:
-          Cesium.VerticalOrigin.BOTTOM,
-
-        pixelOffset:
-          new Cesium.Cartesian2(
-            0,
-            -22
-          )
-
-      }
-
+      description: `
+        <h2>${stop.name}</h2>
+        <p><strong>Location:</strong> ${stop.city}</p>
+        <p><strong>Internship:</strong> ${stop.internship}</p>
+        <p>${stop.description}</p>
+      `
     });
 
+    companyEntities.push(entity);
+  });
 
-  // ============================================================
+
+  // =========================
+  // AIRCRAFT
+  // =========================
+
+  let aircraftLongitude = START_LOCATION.longitude;
+  let aircraftLatitude = START_LOCATION.latitude;
+
+  const aircraft = viewer.entities.add({
+    position: Cesium.Cartesian3.fromDegrees(
+      aircraftLongitude,
+      aircraftLatitude,
+      FLIGHT_HEIGHT
+    ),
+
+    point: {
+      pixelSize: 16,
+      color: Cesium.Color.YELLOW,
+      outlineColor: Cesium.Color.BLACK,
+      outlineWidth: 3
+    },
+
+    label: {
+      text: "✈ Aircraft",
+      font: "bold 14px sans-serif",
+      fillColor: Cesium.Color.YELLOW,
+      outlineColor: Cesium.Color.BLACK,
+      outlineWidth: 3,
+      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+      verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+      pixelOffset: new Cesium.Cartesian2(0, -18),
+      disableDepthTestDistance: Number.POSITIVE_INFINITY
+    }
+  });
+
+
+  // =========================
   // FLIGHT STATE
-  // ============================================================
+  // =========================
 
   let currentStopIndex = 0;
-
-  let flightPaused = false;
-
-  let flightFinished = false;
-
-  let lastTime =
-    performance.now();
-
-  let stopTimer = null;
+  let flying = true;
+  let waitingAtStop = false;
+  let waitTimer = null;
 
 
-  // ============================================================
-  // DISTANCE
-  // ============================================================
+  // =========================
+  // DISTANCE CALCULATION
+  // =========================
 
-  function distanceBetween(
-    longitude1,
-    latitude1,
-    longitude2,
-    latitude2
-  ) {
+  function distanceToStop(stop) {
 
-    const dx =
-      longitude2 - longitude1;
-
-    const dy =
-      latitude2 - latitude1;
+    const dx = stop.longitude - aircraftLongitude;
+    const dy = stop.latitude - aircraftLatitude;
 
     return Math.sqrt(
       dx * dx +
       dy * dy
     );
-
   }
 
 
-  // ============================================================
+  // =========================
   // MOVE AIRCRAFT
-  // ============================================================
+  // =========================
 
-  function moveAircraft(
-    deltaTime
-  ) {
+  function moveAircraft() {
 
-    if (
-      flightPaused ||
-      flightFinished
-    ) {
+    if (!flying || waitingAtStop) {
       return;
     }
 
-
-    const target =
-      flightStops[
-        currentStopIndex
-      ];
-
-
-    if (!target) {
-
+    if (currentStopIndex >= flightStops.length) {
       finishFlight();
-
-      return;
-
-    }
-
-
-    const currentCartesian =
-      aircraft.position.getValue(
-        Cesium.JulianDate.now()
-      );
-
-
-    if (!currentCartesian) {
       return;
     }
 
+    const stop = flightStops[currentStopIndex];
 
-    const currentCartographic =
-      Cesium.Cartographic.fromCartesian(
-        currentCartesian
-      );
+    const dx =
+      stop.longitude - aircraftLongitude;
 
-
-    const currentLongitude =
-      Cesium.Math.toDegrees(
-        currentCartographic.longitude
-      );
-
-
-    const currentLatitude =
-      Cesium.Math.toDegrees(
-        currentCartographic.latitude
-      );
-
+    const dy =
+      stop.latitude - aircraftLatitude;
 
     const distance =
-      distanceBetween(
+      Math.sqrt(dx * dx + dy * dy);
 
-        currentLongitude,
-        currentLatitude,
+    // Arrived at destination
+    if (distance <= ARRIVAL_DISTANCE) {
 
-        target.longitude,
-        target.latitude
+      aircraftLongitude = stop.longitude;
+      aircraftLatitude = stop.latitude;
 
+      aircraft.position = Cesium.Cartesian3.fromDegrees(
+        aircraftLongitude,
+        aircraftLatitude,
+        FLIGHT_HEIGHT
       );
-
-
-    // ----------------------------------------------------------
-    // ARRIVED
-    // ----------------------------------------------------------
-
-    if (
-      distance <=
-      ARRIVAL_DISTANCE
-    ) {
-
-      aircraft.position =
-        Cesium.Cartesian3.fromDegrees(
-
-          target.longitude,
-          target.latitude,
-          FLIGHT_HEIGHT
-
-        );
 
       arriveAtStop();
 
       return;
-
     }
 
-
-    // ----------------------------------------------------------
-    // MOVE
-    // ----------------------------------------------------------
-
-    const step =
-      FLIGHT_SPEED *
-      deltaTime;
-
-
-    const ratio =
-      Math.min(
-        step / distance,
-        1
-      );
-
-
-    const newLongitude =
-      currentLongitude +
-      (
-        target.longitude -
-        currentLongitude
-      ) *
-      ratio;
-
-
-    const newLatitude =
-      currentLatitude +
-      (
-        target.latitude -
-        currentLatitude
-      ) *
-      ratio;
-
-
-    aircraft.position =
-      Cesium.Cartesian3.fromDegrees(
-
-        newLongitude,
-        newLatitude,
-        FLIGHT_HEIGHT
-
-      );
-
-  }
-
-
-  // ============================================================
-  // ARRIVE AT STOP
-  // ============================================================
-
-  function arriveAtStop() {
-
-    flightPaused = true;
-
-
-    const stop =
-      flightStops[
-        currentStopIndex
-      ];
-
-
-    aircraft.label.text =
-      `STOP ${
-        currentStopIndex + 1
-      }: ${stop.name}`;
-
-
-    viewer.selectedEntity =
-      stopEntities[
-        currentStopIndex
-      ];
-
-
-    viewer.camera.flyTo({
-
-      destination:
-        Cesium.Cartesian3.fromDegrees(
-
-          stop.longitude,
-          stop.latitude,
-          3500
-
-        ),
-
-      orientation: {
-
-        heading:
-          Cesium.Math.toRadians(0),
-
-        pitch:
-          Cesium.Math.toRadians(-55),
-
-        roll: 0
-
-      },
-
-      duration: 2
-
-    });
-
-
-    showStopPanel(stop);
-
-
-    stopTimer =
-      setTimeout(
-        () => {
-          continueToNextStop();
-        },
-        STOP_TIME
-      );
-
-  }
-
-
-  // ============================================================
-  // NEXT STOP
-  // ============================================================
-
-  function continueToNextStop() {
-
-    if (stopTimer) {
-
-      clearTimeout(stopTimer);
-
-      stopTimer = null;
-
-    }
-
-
-    hideStopPanel();
-
-
-    currentStopIndex++;
-
-
-    if (
-      currentStopIndex >=
-      flightStops.length
-    ) {
-
-      finishFlight();
-
-      return;
-
-    }
-
-
-    flightPaused = false;
-
-
-    const nextStop =
-      flightStops[
-        currentStopIndex
-      ];
-
-
-    aircraft.label.text =
-      `Flying to ${nextStop.name}`;
-
-
-    viewer.camera.flyTo({
-
-      destination:
-        Cesium.Cartesian3.fromDegrees(
-
-          nextStop.longitude,
-          nextStop.latitude,
-          10000
-
-        ),
-
-      orientation: {
-
-        heading:
-          Cesium.Math.toRadians(0),
-
-        pitch:
-          Cesium.Math.toRadians(-35),
-
-        roll: 0
-
-      },
-
-      duration: 2
-
-    });
-
-  }
-
-
-  // ============================================================
-  // FINISH
-  // ============================================================
-
-  function finishFlight() {
-
-    flightFinished = true;
-
-    flightPaused = true;
-
-    aircraft.label.text =
-      "FLIGHT COMPLETE";
-
-    showCompletionPanel();
-
-  }
-
-
-  // ============================================================
-  // PANEL
-  // ============================================================
-
-  function createPanel() {
-
-    let panel =
-      document.getElementById(
-        "flightStopPanel"
-      );
-
-
-    if (panel) {
-      return panel;
-    }
-
-
-    panel =
-      document.createElement("div");
-
-
-    panel.id =
-      "flightStopPanel";
-
-
-    panel.style.position =
-      "absolute";
-
-    panel.style.top =
-      "20px";
-
-    panel.style.left =
-      "20px";
-
-    panel.style.width =
-      "300px";
-
-    panel.style.background =
-      "rgba(0,0,0,0.82)";
-
-    panel.style.color =
-      "white";
-
-    panel.style.padding =
-      "18px";
-
-    panel.style.borderRadius =
-      "12px";
-
-    panel.style.fontFamily =
-      "Arial,sans-serif";
-
-    panel.style.zIndex =
-      "1000";
-
-    panel.style.display =
-      "none";
-
-
-    document.body.appendChild(
-      panel
+    // Normalize movement direction
+    const directionX = dx / distance;
+    const directionY = dy / distance;
+
+    // Move slowly toward destination
+    aircraftLongitude +=
+      directionX * FLIGHT_SPEED;
+
+    aircraftLatitude +=
+      directionY * FLIGHT_SPEED;
+
+
+    // Update aircraft position
+    aircraft.position = Cesium.Cartesian3.fromDegrees(
+      aircraftLongitude,
+      aircraftLatitude,
+      FLIGHT_HEIGHT
     );
 
 
-    return panel;
+    // =========================
+    // FOLLOW THE AIRCRAFT
+    // =========================
 
-  }
+    // This keeps the yellow aircraft visible
+    // instead of jumping the camera to each stop.
 
-
-  // ============================================================
-  // SHOW STOP
-  // ============================================================
-
-  function showStopPanel(stop) {
-
-    const panel =
-      createPanel();
-
-
-    panel.style.display =
-      "block";
-
-
-    panel.innerHTML = `
-
-      <div style="
-        font-size:12px;
-        text-transform:uppercase;
-        opacity:.7;
-      ">
-
-        Flight Stop
-        ${currentStopIndex + 1}
-        of
-        ${flightStops.length}
-
-      </div>
-
-
-      <h2>
-        ${stop.name}
-      </h2>
-
-
-      <div style="
-        margin-bottom:10px;
-        opacity:.85;
-      ">
-
-        📍 ${stop.city}
-
-      </div>
-
-
-      <div style="
-        margin-bottom:10px;
-      ">
-
-        <strong>
-          Internship:
-        </strong>
-
-        <br>
-
-        ${stop.internship}
-
-      </div>
-
-
-      <div style="
-        font-size:13px;
-        line-height:1.4;
-      ">
-
-        ${stop.description}
-
-      </div>
-
-
-      <button
-        id="continueFlightButton"
-        style="
-          margin-top:15px;
-          width:100%;
-          padding:10px;
-          border:0;
-          border-radius:7px;
-          cursor:pointer;
-          font-weight:bold;
-        "
-      >
-
-        Continue Flight
-
-      </button>
-
-    `;
-
-
-    document
-      .getElementById(
-        "continueFlightButton"
+    viewer.camera.lookAt(
+      aircraft.position.getValue(Cesium.JulianDate.now()),
+      new Cesium.HeadingPitchRange(
+        0,
+        Cesium.Math.toRadians(-35),
+        35000
       )
-      .addEventListener(
-        "click",
-        continueToNextStop
-      );
-
+    );
   }
 
 
-  // ============================================================
-  // HIDE PANEL
-  // ============================================================
+  // =========================
+  // ARRIVAL
+  // =========================
 
-  function hideStopPanel() {
+  function arriveAtStop() {
 
-    const panel =
-      document.getElementById(
-        "flightStopPanel"
-      );
+    const stop = flightStops[currentStopIndex];
 
+    waitingAtStop = true;
 
-    if (panel) {
-
-      panel.style.display =
-        "none";
-
+    if (message) {
+      message.textContent =
+        `Arrived at ${stop.name}`;
     }
 
-  }
+    viewer.selectedEntity =
+      companyEntities[currentStopIndex];
 
 
-  // ============================================================
-  // COMPLETE PANEL
-  // ============================================================
-
-  function showCompletionPanel() {
-
-    const panel =
-      createPanel();
-
-
-    panel.style.display =
-      "block";
-
-
-    panel.innerHTML = `
-
-      <div style="
-        font-size:12px;
-        text-transform:uppercase;
-        opacity:.7;
-      ">
-
-        Flight Complete
-
-      </div>
-
-
-      <h2>
-        ✈️ Internship Tour Complete
-      </h2>
-
-
-      <p>
-        You have completed all
-        ${flightStops.length}
-        internship stops.
-      </p>
-
-
-      <button
-        id="restartFlightButton"
-        style="
-          margin-top:10px;
-          width:100%;
-          padding:10px;
-          border:0;
-          border-radius:7px;
-          cursor:pointer;
-          font-weight:bold;
-        "
-      >
-
-        Restart Flight
-
-      </button>
-
-    `;
-
-
-    document
-      .getElementById(
-        "restartFlightButton"
+    // Keep the camera near the aircraft.
+    // Do NOT use camera.flyTo here.
+    viewer.camera.lookAt(
+      aircraft.position.getValue(
+        Cesium.JulianDate.now()
+      ),
+      new Cesium.HeadingPitchRange(
+        0,
+        Cesium.Math.toRadians(-35),
+        25000
       )
-      .addEventListener(
-        "click",
-        restartFlight
-      );
+    );
 
+
+    // Wait before continuing
+    waitTimer = setTimeout(() => {
+
+      waitingAtStop = false;
+
+      currentStopIndex++;
+
+      if (currentStopIndex >= flightStops.length) {
+        finishFlight();
+      } else {
+        const nextStop =
+          flightStops[currentStopIndex];
+
+        if (message) {
+          message.textContent =
+            `Flying to ${nextStop.name}...`;
+        }
+      }
+
+    }, STOP_TIME);
   }
 
 
-  // ============================================================
-  // RESTART
-  // ============================================================
+  // =========================
+  // FINISH FLIGHT
+  // =========================
 
-  function restartFlight() {
+  function finishFlight() {
 
-    if (stopTimer) {
+    flying = false;
+    waitingAtStop = false;
 
-      clearTimeout(
-        stopTimer
-      );
-
-      stopTimer = null;
-
+    if (message) {
+      message.textContent =
+        "Flight complete — all internship stops visited.";
     }
 
+    viewer.camera.lookAt(
+      aircraft.position.getValue(
+        Cesium.JulianDate.now()
+      ),
+      new Cesium.HeadingPitchRange(
+        0,
+        Cesium.Math.toRadians(-35),
+        40000
+      )
+    );
+  }
+
+
+  // =========================
+  // RESET
+  // =========================
+
+  function resetFlight() {
+
+    if (waitTimer) {
+      clearTimeout(waitTimer);
+      waitTimer = null;
+    }
+
+    aircraftLongitude =
+      START_LOCATION.longitude;
+
+    aircraftLatitude =
+      START_LOCATION.latitude;
 
     currentStopIndex = 0;
 
-    flightPaused = false;
-
-    flightFinished = false;
-
+    flying = true;
+    waitingAtStop = false;
 
     aircraft.position =
       Cesium.Cartesian3.fromDegrees(
-
-        START_LOCATION.longitude,
-        START_LOCATION.latitude,
+        aircraftLongitude,
+        aircraftLatitude,
         FLIGHT_HEIGHT
-
       );
 
+    viewer.selectedEntity = undefined;
 
-    aircraft.label.text =
-      "Aircraft";
-
-
-    hideStopPanel();
-
-
-    viewer.camera.flyTo({
-
-      destination:
-        Cesium.Cartesian3.fromDegrees(
-
-          START_LOCATION.longitude,
-          START_LOCATION.latitude,
-          12000
-
-        ),
-
-      orientation: {
-
-        heading:
-          Cesium.Math.toRadians(0),
-
-        pitch:
-          Cesium.Math.toRadians(-40),
-
-        roll: 0
-
-      },
-
-      duration: 2
-
-    });
-
+    if (message) {
+      message.textContent =
+        `Flying to ${flightStops[0].name}...`;
+    }
   }
 
 
-  // ============================================================
-  // STARTING CAMERA
-  // ============================================================
+  // =========================
+  // CONTINUE BUTTON
+  // =========================
 
-  viewer.camera.flyTo({
+  function continueFlight() {
 
-    destination:
-      Cesium.Cartesian3.fromDegrees(
+    if (currentStopIndex < flightStops.length) {
 
-        START_LOCATION.longitude,
-        START_LOCATION.latitude,
-        12000
+      waitingAtStop = false;
+      flying = true;
 
-      ),
+      if (message) {
+        message.textContent =
+          `Flying to ${flightStops[currentStopIndex].name}...`;
+      }
+    }
+  }
 
-    orientation: {
 
-      heading:
-        Cesium.Math.toRadians(0),
+  // =========================
+  // CAMERA START POSITION
+  // =========================
 
-      pitch:
-        Cesium.Math.toRadians(-40),
+  viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(
+      START_LOCATION.longitude,
+      START_LOCATION.latitude,
+      50000
+    )
+  });
 
-      roll: 0
 
-    },
+  // =========================
+  // FLIGHT LOOP
+  // =========================
 
-    duration: 2
+  viewer.clock.onTick.addEventListener(() => {
+
+    moveAircraft();
 
   });
 
 
-  // ============================================================
-  // FLIGHT LOOP
-  // ============================================================
+  // =========================
+  // ORIGINAL CONTROLS
+  // =========================
 
-  viewer.clock.onTick.addEventListener(
-    () => {
+  const flyButton =
+    document.getElementById("fly");
 
-      const now =
-        performance.now();
+  const pauseButton =
+    document.getElementById("pause");
 
-
-      const deltaTime =
-        Math.min(
-
-          (now - lastTime) /
-          16.67,
-
-          3
-
-        );
+  const resetButton =
+    document.getElementById("reset");
 
 
-      lastTime = now;
+  if (flyButton) {
+
+    flyButton.addEventListener(
+      "click",
+      () => {
+
+        flying = true;
+        waitingAtStop = false;
+
+        if (message) {
+          message.textContent =
+            `Flying to ${flightStops[currentStopIndex].name}...`;
+        }
+
+      }
+    );
+
+  }
 
 
-      moveAircraft(
-        deltaTime
-      );
+  if (pauseButton) {
 
-    }
+    pauseButton.addEventListener(
+      "click",
+      () => {
+
+        flying = false;
+
+        if (message) {
+          message.textContent =
+            "Flight paused.";
+        }
+
+      }
+    );
+
+  }
+
+
+  if (resetButton) {
+
+    resetButton.addEventListener(
+      "click",
+      resetFlight
+    );
+
+  }
+
+
+  // =========================
+  // CLICK COMPANY MARKERS
+  // =========================
+
+  viewer.screenSpaceEventHandler.setInputAction(
+    (movement) => {
+
+      const picked =
+        viewer.scene.pick(movement.position);
+
+      if (
+        Cesium.defined(picked) &&
+        picked.id
+      ) {
+
+        viewer.selectedEntity =
+          picked.id;
+
+      }
+
+    },
+    Cesium.ScreenSpaceEventType.LEFT_CLICK
   );
 
 
-  // ============================================================
-  // CLICKING COMPANY MARKERS
-  // ============================================================
+  // =========================
+  // START FLIGHT
+  // =========================
 
-  viewer
-    .screenSpaceEventHandler
-    .setInputAction(
-
-      function (click) {
-
-        const picked =
-          viewer.scene.pick(
-            click.position
-          );
-
-
-        if (
-          Cesium.defined(picked) &&
-          picked.id
-        ) {
-
-          viewer.selectedEntity =
-            picked.id;
-
-        }
-
-      },
-
-      Cesium
-        .ScreenSpaceEventType
-        .LEFT_CLICK
-
-    );
+  if (message) {
+    message.textContent =
+      `Flying to ${flightStops[0].name}...`;
+  }
 
 })();
