@@ -1,1 +1,477 @@
-*{box-sizing:border-box}body{margin:0;background:#f5f2ed;color:#202124;font:17px/1.5 system-ui,sans-serif}header{background:#800025;color:white;padding:20px 5%}header p{margin:5px 0}h1{margin:4px 0;font-size:2.3rem}h2{font-size:1.25rem}main{display:grid;grid-template-columns:320px 1fr;gap:16px;padding:20px}section{background:white;border-radius:12px;padding:20px}#globe{height:65vh;min-height:440px;border-radius:12px;overflow:hidden}.buttons{display:flex;flex-wrap:wrap;gap:8px}button{font:inherit;padding:10px 14px;background:#800025;color:white;border:0;border-radius:6px;cursor:pointer}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #b57b00;outline-offset:3px}label{display:block;margin-top:18px}input{font:inherit;padding:8px;width:100%}#readout{font-variant-numeric:tabular-nums}a{color:#800025}footer{padding:0 24px 24px}@media(max-width:800px){main{grid-template-columns:1fr}#globe{height:55vh}}
+/* ==========================================
+   FUTURISTIC FLIGHT LAB
+   ========================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(40, 120, 255, 0.28),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(0, 70, 180, 0.25),
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      #020617,
+      #031b3f,
+      #062b63,
+      #020617
+    );
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+
+header {
+  position: relative;
+  z-index: 10;
+
+  padding: 22px 30px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2, 8, 23, 0.96),
+      rgba(3, 27, 63, 0.9),
+      rgba(2, 8, 23, 0.96)
+    );
+
+  border-bottom: 1px solid rgba(70, 160, 255, 0.35);
+
+  box-shadow:
+    0 0 30px rgba(0, 110, 255, 0.15);
+}
+
+header p:first-child {
+  margin: 0 0 6px;
+
+  color: #55bfff;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+header h1 {
+  margin: 0;
+
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: -1px;
+
+  text-shadow:
+    0 0 15px rgba(60, 170, 255, 0.45);
+}
+
+header p:last-child {
+  margin: 8px 0 0;
+
+  color: #b8d8ff;
+}
+
+/* ==========================================
+   MAIN
+   ========================================== */
+
+main {
+  position: relative;
+
+  min-height: calc(100vh - 150px);
+
+  overflow: hidden;
+}
+
+/* ==========================================
+   GLOBE
+   ========================================== */
+
+#globe {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 720px;
+
+  background: #02142e;
+}
+
+/* ==========================================
+   CONTROL PANEL
+   ========================================== */
+
+.control-panel {
+  position: absolute;
+
+  z-index: 20;
+
+  top: 25px;
+  left: 25px;
+
+  width: 355px;
+  max-width: calc(100vw - 50px);
+
+  padding: 22px;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(4, 18, 43, 0.94),
+      rgba(2, 10, 28, 0.91)
+    );
+
+  border: 1px solid rgba(72, 166, 255, 0.4);
+
+  box-shadow:
+    0 0 30px rgba(0, 90, 255, 0.18),
+    inset 0 0 25px rgba(30, 130, 255, 0.05);
+
+  backdrop-filter: blur(16px);
+
+  max-height: calc(100vh - 190px);
+
+  overflow-y: auto;
+}
+
+/* ==========================================
+   PANEL HEADER
+   ========================================== */
+
+.panel-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 15px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  background: #42c8ff;
+
+  box-shadow:
+    0 0 8px #42c8ff,
+    0 0 18px rgba(66, 200, 255, 0.7);
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+
+  color: #4fbfff;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.panel-header h2 {
+  margin: 0;
+
+  font-size: 22px;
+}
+
+/* ==========================================
+   STATUS
+   ========================================== */
+
+.status-message {
+  padding: 10px 12px;
+
+  margin: 12px 0;
+
+  border-left: 3px solid #36b9ff;
+
+  background: rgba(30, 130, 255, 0.08);
+
+  color: #d6ebff;
+
+  font-size: 13px;
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+
+.flight-buttons,
+.direction-buttons {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 8px;
+
+  margin-bottom: 9px;
+}
+
+button {
+  padding: 10px 9px;
+
+  border: 1px solid rgba(80, 170, 255, 0.35);
+
+  border-radius: 8px;
+
+  background: rgba(10, 45, 90, 0.75);
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+
+  background: rgba(25, 95, 170, 0.85);
+
+  box-shadow:
+    0 0 15px rgba(50, 160, 255, 0.25);
+}
+
+.primary-button {
+  background:
+    linear-gradient(
+      135deg,
+      #087cff,
+      #1551e5
+    );
+
+  border-color: #39b9ff;
+
+  box-shadow:
+    0 0 15px rgba(0, 120, 255, 0.3);
+}
+
+/* ==========================================
+   SLIDERS
+   ========================================== */
+
+.control-group {
+  margin-top: 18px;
+}
+
+.control-group label {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+
+  color: #b8d8ff;
+
+  font-size: 13px;
+}
+
+.control-group strong {
+  color: white;
+}
+
+input[type="range"] {
+  width: 100%;
+
+  accent-color: #24a9ff;
+
+  cursor: pointer;
+}
+
+/* ==========================================
+   TELEMETRY
+   ========================================== */
+
+.telemetry {
+  margin-top: 20px;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  background:
+    rgba(0, 30, 70, 0.65);
+
+  border: 1px solid rgba(70, 160, 255, 0.2);
+}
+
+.telemetry-title {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  color: #64c5ff;
+}
+
+.live-indicator {
+  color: #59e0ff;
+
+  text-shadow:
+    0 0 8px #59e0ff;
+}
+
+.telemetry-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+}
+
+.telemetry-item {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.telemetry-item span {
+  color: #7396bd;
+
+  font-size: 9px;
+
+  letter-spacing: 1px;
+}
+
+.telemetry-item strong {
+  color: #ffffff;
+
+  font-family: monospace;
+
+  font-size: 13px;
+}
+
+/* ==========================================
+   DESTINATION
+   ========================================== */
+
+.destination-card {
+  margin-top: 15px;
+
+  padding: 15px;
+
+  border-left: 3px solid #2fb8ff;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(30, 120, 255, 0.12),
+      rgba(30, 120, 255, 0.02)
+    );
+}
+
+.destination-card h3 {
+  margin: 4px 0;
+
+  font-size: 17px;
+}
+
+.destination-card p:last-child {
+  margin: 0;
+
+  color: #9ec8ef;
+
+  font-size: 12px;
+}
+
+/* ==========================================
+   INSTRUCTIONS
+   ========================================== */
+
+.instructions {
+  margin: 18px 0 0;
+
+  color: #7798bd;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+footer {
+  position: relative;
+
+  z-index: 10;
+
+  padding: 14px 25px;
+
+  background: #020817;
+
+  border-top: 1px solid rgba(70, 160, 255, 0.25);
+
+  color: #7898bc;
+
+  font-size: 11px;
+}
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 700px) {
+
+  .control-panel {
+    position: relative;
+
+    top: auto;
+    left: auto;
+
+    width: auto;
+
+    margin: 15px;
+
+    max-height: none;
+  }
+
+  #globe {
+    position: relative;
+
+    min-height: 600px;
+  }
+
+  main {
+    display: flex;
+
+    flex-direction: column;
+  }
+
+}
