@@ -3,6 +3,8 @@
 // Reading, Pennsylvania Internship Flight
 // ==========================================
 
+(async function () {
+
 Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6InlFaHNwaGRrWmRQTDdya0oiLCJqdGkiOiI1ODdlYWQ3OS1iNzVjLTRkY2QtOWNmMC1jZGI3YTU2NDMzMmYiLCJpZCI6NTA1NzM0LCJzdWIiOiJtaW1pMyIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJtaW1pM19kZWZhdWx0IiwiaWF0IjoxNzkxMjQ2NDI0fQ.cE6f5rdC3lp9FPiCNOxwEb6C0J_FK4lDgUavPzUcdl0"
 // ------------------------------------------
 // FLIGHT STOPS
@@ -680,3 +682,4 @@ document
 // ------------------------------------------
 
 resetFlight();
+  })();
