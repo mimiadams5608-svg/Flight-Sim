@@ -6,7 +6,7 @@
   // Reading, Pennsylvania Internship Flight
   // ==========================================
 
-  Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6InlFaHNwaGRrWmRQTDdya0oiLCJqdGkiOiI1ODdlYWQ3OS1iNzVjLTRkY2QtOWNmMC1jZGI3YTU2NDMzMmYiLCJpZCI6NTA1NzM0LCJzdWIiOiJtaW1pMyIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJtaW1pM19kZWZhdWx0IiwiaWF0IjoxNzkxMjQ2NDI0fQ.cE6f5rdC3lp9FPiCNOxwEb6C0J_FK4lDgUavPzUcdl0";
+  Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IlJrYXozVzlic2x6eU5NSlYiLCJqdGkiOiJhNzcwMDAyZC1lYWI4LTQ3NTctOWI1OS1mMDhhMGViNWU4MjciLCJpZCI6NTA1NzM0LCJzdWIiOiJtaW1pMyIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJtaW1pM19kZWZhdWx0IiwiaWF0IjoxNzkxMjUwNTQ2fQ.lvsj1owqres_vF8j2dk2Hgakt_ju4fLcYudR7PfGU6w";
 
   // ==========================================
   // FLIGHT STOPS
@@ -143,16 +143,14 @@
   // FLIGHT SETTINGS
   // ==========================================
 
-  let flightSpeed = 70;
+let flightSpeed = 70;
+let flightHeight = 1200;
 
-  let flightHeight = 1200;
+let heading = 0;
+let headingOffset = 0;
 
-  let heading = 0;
-
-  const STOP_TIME = 4000;
-
-  const FOLLOW_CAMERA_DISTANCE = 9000;
-
+const STOP_TIME = 4000;
+const FOLLOW_CAMERA_DISTANCE = 9000;
   // ==========================================
   // FLIGHT STATE
   // ==========================================
@@ -601,21 +599,25 @@
     // CALCULATE HEADING
     // ----------------------------------------
 
-    heading =
-      Cesium.Math.toDegrees(
-        Math.atan2(
-          directionLongitude,
-          directionLatitude
-        )
-      );
+const routeHeading =
+  Cesium.Math.toDegrees(
+    Math.atan2(
+      directionLongitude,
+      directionLatitude
+    )
+  );
 
-    if (heading < 0) {
+// Apply manual left/right adjustment
+heading =
+  routeHeading + headingOffset;
 
-      heading += 360;
+if (heading < 0) {
+  heading += 360;
+}
 
-    }
-
-  }
+if (heading >= 360) {
+  heading -= 360;
+}
 
   // ==========================================
   // ARRIVE AT STOP
@@ -807,6 +809,7 @@
       flightStops[0].latitude;
 
     heading = 0;
+    headingOffset = 0;
 
     updateDestinationDisplay();
 
@@ -1010,62 +1013,58 @@
   // ==========================================
   // LEFT 10°
   // ==========================================
+    const leftButton =
+  document.getElementById(
+    "left"
+  );
 
-  const leftButton =
-    document.getElementById(
-      "left"
-    );
+if (leftButton) {
 
-  if (leftButton) {
+  leftButton.addEventListener(
+    "click",
+    () => {
 
-    leftButton.addEventListener(
-      "click",
-      () => {
+      headingOffset -= 10;
 
-        heading -= 10;
-
-        if (heading < 0) {
-
-          heading += 360;
-
-        }
-
-        updateTelemetry();
-
+      if (headingOffset < -180) {
+        headingOffset = -180;
       }
-    );
 
-  }
+      updateTelemetry();
+
+    }
+  );
+
+}
+
 
   // ==========================================
   // RIGHT 10°
   // ==========================================
 
   const rightButton =
-    document.getElementById(
-      "right"
-    );
+  document.getElementById(
+    "right"
+  );
 
-  if (rightButton) {
+if (rightButton) {
 
-    rightButton.addEventListener(
-      "click",
-      () => {
+  rightButton.addEventListener(
+    "click",
+    () => {
 
-        heading += 10;
+      headingOffset += 10;
 
-        if (heading >= 360) {
-
-          heading -= 360;
-
-        }
-
-        updateTelemetry();
-
+      if (headingOffset > 180) {
+        headingOffset = 180;
       }
-    );
 
-  }
+      updateTelemetry();
+
+    }
+  );
+
+}
 
   // ==========================================
   // BUTTONS
