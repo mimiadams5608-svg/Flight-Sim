@@ -31,11 +31,59 @@ Accepted:
 * Slow tour button
 * First 5 Checks in test_log
 * Pitch Help
+* accepted using CesiumJS to create my flight simulator.
+* accepted using a realistic 3D Earth/globe instead of a simple blue background.
+* accepted using real-world imagery from Cesium World Imagery.
+* accepted using real-world terrain through Cesium.
+* accepted adding 3D buildings using Cesium's OpenStreetMap buildings.
+* accepted using my Cesium Ion token to access the Cesium features.
+* accepted creating a yellow aircraft marker to make the aircraft easy to see on the map.
+* accepted making the aircraft move slowly so the flight can be clearly followed.
+* accepted having the aircraft visit the internship locations in order.
+* accepted using six internship locations: Penske Truck Leasing, Hubbell, Fidelity Technologies, EnerSys Global Technology Center, Materion, and East Penn Manufacturing.
+* accepted adding company markers to show where each internship location is.
+* accepted adding company names next to the markers so the locations are easy to identify.
+* accepted adding clickable company information boxes with information about each company and internship opportunity.
+* accepted making the company information box match my Flight Controls panel with the futuristic blue design.
+* accepted adding flight controls for Fly, Pause, Slow Tour, and Reset.
+* accepted adding Left 10° and Right 10° controls for changing the aircraft's heading.
+* accepted adding a speed slider so I can control the aircraft's speed.
+* accepted adding a height slider so I can control the aircraft's altitude.
+* accepted adding telemetry showing latitude, longitude, altitude, and heading.
+* accepted having the aircraft stop at each company before continuing to the next location.
+* accepted having the camera show each company when the aircraft arrives.
+* accepted allowing the user to manually zoom and explore the map.
+* accepted using a futuristic PlayStation-inspired blue interface for the overall design.
+* accepted using dark glass-style panels, blue borders, and glowing effects for the interface.
+* accepted using an async function to properly load Cesium's imagery and 3D building resources.
+* accepted fixing the missing } in moveAircraft() to solve the JavaScript syntax error.
+* accepted keeping the existing working parts of my project instead of unnecessarily rewriting the entire application.
+* accepted regenerating my Cesium token after it was exposed, to keep my project secure.
 
+  
 Rejected:
 
 * 7 additional test
-* 
+* rejected Freddie Mac as one of the internship stops.
+* rejected World Wide Technology as one of the internship stops.
+* rejected numbered company markers because I wanted the map to look cleaner.
+* rejected the blue-only globe because I wanted a realistic Earth with real imagery.
+* rejected creating a completely new building design because I wanted the buildings to stay accurate to the real ones.
+* rejected changing globe to cesiumContainer because my HTML uses globe.
+* rejected removing all imagery layers because it caused my globe/imagery to disappear.
+* rejected using top-level await because it caused a JavaScript error.
+*  rejected putting ```javascript at the top of my app.js file because that is Markdown formatting, not part of the JavaScript code.
+* rejected changing my entire app.js unnecessarily because I did not want to risk breaking the parts that were already working.
+* rejected having the aircraft skip stops because I wanted it to visit every internship location in order.
+* rejected having the aircraft move too quickly because I wanted to clearly see it traveling between locations.
+* rejected having the camera completely control my view because I wanted to manually zoom in and look at the buildings.
+* rejected removing the telemetry because I wanted to see the aircraft's latitude, longitude, altitude, and heading.
+* rejected removing my original flight controls because I wanted to keep Fly, Pause, Slow Tour, Reset, Left 10°, and Right 10°.
+* rejected having the Left and Right buttons do nothing because I wanted them to actually change the aircraft's heading.
+* rejected using the Left and Right buttons to completely change the internship route because I wanted the aircraft to continue following the planned stops.
+* rejected the basic Cesium InfoBox design because I wanted the company information box to match the futuristic Flight Controls panel.
+* rejected having duplicate InfoBox CSS because I wanted one clean styling section.
+______________________________________________________________________________________________________
 
 Ai Excerpts:
 
@@ -76,13 +124,24 @@ Excerpt 3.) I started over from your original starter and added only the Slow To
 - On the main page, click Slow Tour and confirm the speed box shows 20, the marker moves, and the label matches the wording exactly. Screenshot that too.
 
 I didn't touch the README, so its "Student additions" section is still blank. Do you want me to draft it for this feature, or work on the pitch wording next?
+______________________________________________________________________________________________________
 
 # Photos for test log evidence can be found in the evidence folder
 
-Partner reproduction feedback: TODO (partner name, what they followed, one improvement you made)
+Partner reproduction feedback: My partner for this project was Makayla. She took a look at my application and tested it out. She really liked the design and said that it reminded her of the Santa Tracker. She also said that she didn’t see anything that I needed to improve, which was good to hear because I felt like the application was coming together well.
 
-Geographic/API sources: CesiumJS 1.145 (cesium.com/learn). Origin (-75.93, 40.33) is an approximate Reading-area reference, not a verified campus location. TODO: how you checked it.
-Known limitations: No real aircraft physics; height changes instantly; frame dt capped at 0.1 s; Slow Tour is only a speed preset. TODO add any others you observe.
+Reflection:  
+
+For this project, I contributed to the design and development of my flight simulator. I wanted the application to connect students with internship opportunities around the Reading area while making the experience interactive. I worked on the flight controls, company locations, telemetry, and the overall futuristic blue design. My partner, Makayla, tested the application and said she liked the design and that it reminded her of the Santa Tracker.
+
+One problem I worked through involved `dt`, which controls how the aircraft's movement connects to real time. I struggled to make the change myself, so I used AI to create a version of the folder without `dt`. When I ran `tests.html`, the "Duration consistency" test failed. This helped me understand that without `dt`, the aircraft's speed and distance could change depending on the computer. After restoring it, all 8 tests passed. I also kept the AI's suggestion for a Slow Tour button because it makes the distances around Reading easier to see.
+
+One limitation I noticed in the original flight simulator was that the height could only be set between 50 and 5000 meters. I found it strange that I could not go lower or higher. Overall, this project taught me that AI can be a useful tool for building and understanding a project, but I still need to test the changes and make sure they work myself. By running the tests and checking the results, I became more confident in troubleshooting and improving my application.
+
+Geographic/API sources: CesiumJS 1.145 (cesium.com/learn). Origin (-75.93, 40.33) is an approximate Reading-area reference, not a verified campus location. : For my geographic/API source, I used CesiumJS 1.145 from Cesium's documentation at cesium.com/learn. The starting point of (-75.93, 40.33) is an approximate Reading-area reference and is not meant to represent a verified campus location. I checked the geographic locations by comparing the coordinates used in the simulator with the intended Reading-area locations of the companies.
+
+
+Known limitations: One limitation of my simulator is that it does not use real aircraft physics. The height also changes instantly instead of gradually. The frame `dt` is capped at 0.1 seconds to help keep the movement consistent, and the Slow Tour button is only a speed preset rather than a separate flight mode. Another limitation I noticed is that the original height setting was limited to 50–5000 meters.
 
 ## References
 https://cesium.com/learn/cesiumjs-learn/
