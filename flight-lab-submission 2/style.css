@@ -475,3 +475,124 @@ footer {
   }
 
 }
+/* ==========================================
+   CESIUM COMPANY INFORMATION BOX
+   MATCH FLIGHT CONTROLS PANEL
+   ========================================== */
+
+.cesium-infoBox {
+  width: 355px !important;
+  max-width: calc(100vw - 50px);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(4, 18, 43, 0.96),
+      rgba(2, 10, 28, 0.94)
+    ) !important;
+
+  border: 1px solid rgba(72, 166, 255, 0.55) !important;
+
+  border-radius: 16px !important;
+
+  box-shadow:
+    0 0 30px rgba(0, 90, 255, 0.25),
+    inset 0 0 25px rgba(30, 130, 255, 0.08) !important;
+
+  backdrop-filter: blur(16px);
+
+  color: white !important;
+}
+
+/* ==========================================
+   INFOBOX HEADER
+   ========================================== */
+
+.cesium-infoBox-title {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 18, 43, 0.98),
+      rgba(8, 35, 75, 0.95)
+    ) !important;
+
+  color: #ffffff !important;
+
+  border-bottom: 1px solid rgba(72, 166, 255, 0.35) !important;
+
+  font-weight: 700;
+
+  font-size: 16px;
+}
+
+/* ==========================================
+   INFOBOX CONTENT
+   ========================================== */
+
+.cesium-infoBox-description {
+  background:
+    rgba(2, 10, 28, 0.94) !important;
+
+  color: #c9e5ff !important;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+
+  padding: 15px !important;
+}
+
+/* ==========================================
+   COMPANY NAME
+   ========================================== */
+
+.cesium-infoBox-description h2 {
+  color: #55bfff !important;
+
+  text-shadow:
+    0 0 10px rgba(50, 170, 255, 0.45);
+
+  margin-top: 0;
+}
+
+/* ==========================================
+   INFORMATION LABELS
+   ========================================== */
+
+.cesium-infoBox-description strong {
+  color: #64c5ff !important;
+}
+
+/* ==========================================
+   CLOSE BUTTON
+   ========================================== */
+
+.cesium-infoBox-close {
+  color: #55bfff !important;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  box-shadow: none !important;
+}
+
+.cesium-infoBox-close:hover {
+  color: #ffffff !important;
+
+  background: rgba(30, 130, 255, 0.2) !important;
+}
+
+/* ==========================================
+   MOBILE INFOBOX
+   ========================================== */
+
+@media (max-width: 700px) {
+
+  .cesium-infoBox {
+    width: calc(100vw - 30px) !important;
+
+    max-width: none;
+  }
+
+}
