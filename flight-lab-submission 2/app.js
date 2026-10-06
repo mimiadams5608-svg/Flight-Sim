@@ -1,820 +1,683 @@
-(async () => {
-  "use strict";
+// ==========================================
+// CESIUM FLIGHT LAB
+// Reading, Pennsylvania Internship Flight
+// ==========================================
 
-  // ==========================================
-  // CESIUM SETUP
-  // ==========================================
+Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImoxNDJicUlhYlB5Mjd2bDQiLCJqdGkiOiI1OWU3MjBhNC00M2U3LTRiN2QtODcxOC1hYWNkN2JjZjU4ZDAiLCJpZCI6NTA1NzM0LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3OTAxNjk0NTV9.7i8qqGsNYbbkX7JFYb7MSzGlMmybpYPmv5_GRIZlyc8";
 
-  Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImoxNDJicUlhYlB5Mjd2bDQiLCJqdGkiOiI1OWU3MjBhNC00M2U3LTRiN2QtODcxOC1hYWNkN2JjZjU4ZDAiLCJpZCI6NTA1NzM0LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3OTAxNjk0NTV9.7i8qqGsNYbbkX7JFYb7MSzGlMmybpYPmv5_GRIZlyc8";
+// ------------------------------------------
+// FLIGHT STOPS
+// ------------------------------------------
 
-  const viewer = new Cesium.Viewer("globe", {
-    terrain: Cesium.Terrain.fromWorldTerrain(),
+const flightStops = [
+  {
+    name: "Penske Truck Leasing",
+    city: "Reading, PA",
+    internship: "2027 Corporate Internship — Information Systems",
+    description:
+      "Penske Truck Leasing offers corporate internship opportunities in Information Systems and technology. This stop represents Penske's Reading-area corporate location and connects the flight to opportunities involving information systems, business technology, and computer science.",
+    longitude: -75.8730,
+    latitude: 40.3027
+  },
 
-    animation: false,
-    timeline: false,
+  {
+    name: "Hubbell",
+    city: "Reading, PA",
+    internship: "2027 Engineering / Technology Internship",
+    description:
+      "Hubbell offers 2027 internship opportunities in engineering and technology-related areas. Students can apply technical, analytical, and problem-solving skills in a professional environment. This stop represents Hubbell's Reading facility.",
+    longitude: -75.9387,
+    latitude: 40.3787
+  },
 
-    baseLayerPicker: false,
-    geocoder: false,
+  {
+    name: "Fidelity Technologies",
+    city: "Reading, PA",
+    internship: "Technology, Engineering & Simulation",
+    description:
+      "Fidelity Technologies is a Reading-based defense and aerospace technology company. Its work includes simulation and training systems, software, engineering, manufacturing, and other technical systems. This makes it a strong Computer Science-related stop because the company develops technology-driven simulation and training solutions.",
+    longitude: -75.9248,
+    latitude: 40.3822
+  },
 
-    homeButton: true,
-    sceneModePicker: true,
-    navigationHelpButton: false,
+  {
+    name: "EnerSys Global Technology Center",
+    city: "Reading, PA",
+    internship: "Engineering, Information Technology & Technology",
+    description:
+      "EnerSys operates its Global Technology Center in Reading. The facility supports engineering, product development, testing, energy-storage technology, electronics, software, and related technical work. This stop represents a local technology-focused employer with strong connections to engineering and computer science.",
+    longitude: -75.9456,
+    latitude: 40.3825
+  },
 
-    selectionIndicator: true,
-    infoBox: true
+  {
+    name: "Materion",
+    city: "Leesport, PA",
+    internship: "2027 Summer Internship Program",
+    description:
+      "Materion's 2027 Summer Internship Program includes opportunities connected to Information Technology, Computer Science, and Data Science. Students can apply programming, data, technology, and problem-solving skills in a professional environment. This stop represents Materion's Leesport-area facility.",
+    longitude: -75.9685,
+    latitude: 40.4498
+  },
+
+  {
+    name: "East Penn Manufacturing",
+    city: "Lyon Station, PA",
+    internship: "IT Cybersecurity Internship — Summer 2027",
+    description:
+      "East Penn Manufacturing offers IT and cybersecurity opportunities involving areas such as networking, operating systems, information technology, and cybersecurity. This stop represents East Penn Manufacturing's Lyon Station headquarters and manufacturing campus.",
+    longitude: -76.0037,
+    latitude: 40.5247
+  }
+];
+
+// ------------------------------------------
+// CESIUM VIEWER
+// ------------------------------------------
+
+const viewer = new Cesium.Viewer("globe", {
+  terrain: Cesium.Terrain.fromWorldTerrain(),
+
+  animation: false,
+  timeline: false,
+
+  baseLayerPicker: false,
+  geocoder: false,
+
+  homeButton: true,
+  sceneModePicker: true,
+  navigationHelpButton: false,
+
+  selectionIndicator: true,
+  infoBox: true
+});
+
+// ------------------------------------------
+// WORLD IMAGERY
+// ------------------------------------------
+
+try {
+  const imageryProvider = await Cesium.createWorldImageryAsync();
+  viewer.imageryLayers.addImageryProvider(imageryProvider);
+} catch (error) {
+  console.error("Could not load Cesium World Imagery:", error);
+}
+
+// ------------------------------------------
+// 3D BUILDINGS
+// ------------------------------------------
+
+try {
+  const buildings = await Cesium.createOsmBuildingsAsync();
+  viewer.scene.primitives.add(buildings);
+} catch (error) {
+  console.error("Could not load 3D buildings:", error);
+}
+
+// ------------------------------------------
+// TERRAIN / LIGHTING
+// ------------------------------------------
+
+viewer.scene.globe.depthTestAgainstTerrain = true;
+viewer.scene.globe.enableLighting = true;
+viewer.scene.skyAtmosphere.show = true;
+
+// ------------------------------------------
+// FLIGHT SETTINGS
+// ------------------------------------------
+
+// Height of the aircraft above the terrain
+const FLIGHT_HEIGHT = 1200;
+
+// Aircraft speed in meters per second.
+//
+// This is intentionally slow so the yellow aircraft
+// can clearly be seen traveling between stops.
+const FLIGHT_SPEED = 90;
+
+// How long the aircraft pauses at each company
+const STOP_TIME = 4000;
+
+// Camera distance when arriving at a company
+const ARRIVAL_CAMERA_DISTANCE = 3500;
+
+// Camera distance while following the flight
+const FOLLOW_CAMERA_DISTANCE = 9000;
+
+// ------------------------------------------
+// STATE
+// ------------------------------------------
+
+let currentStopIndex = 0;
+let flying = false;
+let lastFrameTime = null;
+let stopPauseUntil = 0;
+let cameraFollowing = false;
+
+// ------------------------------------------
+// AIRCRAFT POSITION
+// ------------------------------------------
+
+let aircraftLongitude = flightStops[0].longitude;
+let aircraftLatitude = flightStops[0].latitude;
+
+// ------------------------------------------
+// CREATE COMPANY MARKERS
+// ------------------------------------------
+
+const companyEntities = [];
+
+flightStops.forEach((stop) => {
+  const entity = viewer.entities.add({
+    name: stop.name,
+
+    position: Cesium.Cartesian3.fromDegrees(
+      stop.longitude,
+      stop.latitude,
+      100
+    ),
+
+    point: {
+      pixelSize: 13,
+      color: Cesium.Color.ORANGE,
+      outlineColor: Cesium.Color.WHITE,
+      outlineWidth: 2,
+
+      disableDepthTestDistance: Number.POSITIVE_INFINITY
+    },
+
+    label: {
+      text: stop.name,
+
+      font: "16px sans-serif",
+
+      fillColor: Cesium.Color.WHITE,
+
+      outlineColor: Cesium.Color.BLACK,
+      outlineWidth: 4,
+
+      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+
+      verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+
+      pixelOffset: new Cesium.Cartesian2(0, -15),
+
+      disableDepthTestDistance: Number.POSITIVE_INFINITY
+    },
+
+    description: `
+      <h2>${stop.name}</h2>
+
+      <p>
+        <strong>Location:</strong> ${stop.city}
+      </p>
+
+      <p>
+        <strong>Opportunity:</strong> ${stop.internship}
+      </p>
+
+      <p>
+        ${stop.description}
+      </p>
+    `
   });
 
-  // Load real-world imagery
-  try {
-    const imageryProvider =
-      await Cesium.createWorldImageryAsync();
+  companyEntities.push(entity);
+});
 
-    viewer.imageryLayers.addImageryProvider(
-      imageryProvider
-    );
-  } catch (error) {
-    console.error(
-      "Could not load Cesium World Imagery:",
-      error
-    );
-  }
+// ------------------------------------------
+// CREATE YELLOW AIRCRAFT
+// ------------------------------------------
 
-  // Load 3D buildings
-  try {
-    const buildings =
-      await Cesium.createOsmBuildingsAsync();
+const aircraft = viewer.entities.add({
+  name: "Aircraft",
 
-    viewer.scene.primitives.add(buildings);
-  } catch (error) {
-    console.error(
-      "Could not load 3D buildings:",
-      error
-    );
-  }
-
-  viewer.scene.globe.depthTestAgainstTerrain = true;
-  viewer.scene.globe.enableLighting = true;
-  viewer.scene.skyAtmosphere.show = true;
-
-
-  // ==========================================
-  // FLIGHT STOPS
-  // ==========================================
-
-  const flightStops = [
-
-    {
-      name: "Penske Truck Leasing",
-      city: "Reading, PA",
-      internship:
-        "2027 Corporate Internship — Information Systems",
-
-      description:
-        "Penske Truck Leasing's 2027 Corporate Internship program includes opportunities in Information Systems. This internship is a strong fit for Computer Science students interested in technology, information systems, business technology, and using technology to support a large organization. The flight stop represents Penske's Reading corporate location.",
-
-      longitude: -75.8728,
-      latitude: 40.3026
-    },
-
-    {
-      name: "Hubbell",
-      city: "Reading, PA",
-      internship:
-        "2027 Engineering / Technology Internship",
-
-      description:
-        "Hubbell offers 2027 internship opportunities in engineering and technology-related areas. Students in Computer Science and related technology fields can gain experience applying technical and problem-solving skills in a professional environment. This flight stop represents Hubbell's Reading-area location.",
-
-      longitude: -75.9387,
-      latitude: 40.3787
-    },
-
-    {
-      name: "Freddie Mac",
-      city: "Remote",
-      internship:
-        "Technology Summer Internship — 2027",
-
-      description:
-        "This is a remote technology internship opportunity involving areas such as software, applications, data, cybersecurity, and information technology. It provides an opportunity for students interested in Computer Science to gain experience working with technology in a professional financial-services environment. The internship itself is remote.",
-
-      longitude: -75.9269,
-      latitude: 40.3356
-    },
-
-    {
-      name: "World Wide Technology",
-      city: "Remote",
-      internship:
-        "2027 Solutions, Consulting & Engineering Internship",
-
-      description:
-        "This remote technology internship provides opportunities to work with areas such as Computer Science, cybersecurity, data science, information technology, solutions, consulting, and software engineering. It is designed for students interested in applying technical knowledge to real-world technology projects. The internship itself is remote.",
-
-      longitude: -75.9269,
-      latitude: 40.3356
-    },
-
-    {
-      name: "Materion",
-      city: "Leesport, PA",
-      internship:
-        "2027 Summer Internship Program",
-
-      description:
-        "Materion's 2027 Summer Internship Program includes opportunities connected to Information Technology, Computer Science, and Data Science. This stop is useful for students interested in applying programming, data, technology, and problem-solving skills in a professional setting. The flight stop represents Materion's Leesport-area location.",
-
-      longitude: -75.9685,
-      latitude: 40.4498
-    },
-
-    {
-      name: "East Penn Manufacturing",
-      city: "Lyon Station, PA",
-      internship:
-        "IT Cybersecurity Internship — Summer 2027",
-
-      description:
-        "East Penn Manufacturing offers an IT cybersecurity internship focused on areas relevant to Computer Science and information technology. Students can explore cybersecurity, networking, operating systems, and other technical concepts while gaining professional experience. The flight stop represents East Penn Manufacturing's Lyon Station location.",
-
-      longitude: -76.0037,
-      latitude: 40.5247
-    }
-
-  ];
-
-
-  // ==========================================
-  // START DIRECTLY AT PENSKE
-  // ==========================================
-
-  const START_LOCATION = {
-    longitude: flightStops[0].longitude,
-    latitude: flightStops[0].latitude
-  };
-
-
-  // ==========================================
-  // FLIGHT SETTINGS
-  // ==========================================
-
-  const FLIGHT_HEIGHT = 1200;
-
-  // Slower movement
-  const FLIGHT_SPEED = 0.000055;
-
-  // Small arrival threshold
-  const ARRIVAL_DISTANCE = 0.00008;
-
-  // Time spent at each location
-  const STOP_TIME = 5000;
-
-
-  // ==========================================
-  // STATUS
-  // ==========================================
-
-  const message =
-    document.getElementById("message");
-
-
-  // ==========================================
-  // COMPANY MARKERS
-  // ==========================================
-
-  const companyEntities = [];
-
-  flightStops.forEach((stop) => {
-
-    const entity = viewer.entities.add({
-
-      position:
-        Cesium.Cartesian3.fromDegrees(
-          stop.longitude,
-          stop.latitude,
-          0
-        ),
-
-      point: {
-        pixelSize: 14,
-
-        color:
-          Cesium.Color.ORANGE,
-
-        outlineColor:
-          Cesium.Color.WHITE,
-
-        outlineWidth: 2
-      },
-
-      label: {
-
-        text: stop.name,
-
-        font:
-          "bold 15px sans-serif",
-
-        fillColor:
-          Cesium.Color.WHITE,
-
-        outlineColor:
-          Cesium.Color.BLACK,
-
-        outlineWidth: 4,
-
-        style:
-          Cesium.LabelStyle.FILL_AND_OUTLINE,
-
-        verticalOrigin:
-          Cesium.VerticalOrigin.BOTTOM,
-
-        pixelOffset:
-          new Cesium.Cartesian2(0, -16),
-
-        disableDepthTestDistance:
-          Number.POSITIVE_INFINITY
-      },
-
-      description: `
-        <h2>${stop.name}</h2>
-
-        <p>
-          <strong>Location:</strong>
-          ${stop.city}
-        </p>
-
-        <p>
-          <strong>Internship:</strong>
-          ${stop.internship}
-        </p>
-
-        <p>
-          ${stop.description}
-        </p>
-      `
-    });
-
-    companyEntities.push(entity);
-  });
-
-
-  // ==========================================
-  // AIRCRAFT
-  // ==========================================
-
-  let aircraftLongitude =
-    START_LOCATION.longitude;
-
-  let aircraftLatitude =
-    START_LOCATION.latitude;
-
-
-  const aircraft =
-    viewer.entities.add({
-
-      position:
-        Cesium.Cartesian3.fromDegrees(
-          aircraftLongitude,
-          aircraftLatitude,
-          FLIGHT_HEIGHT
-        ),
-
-      point: {
-
-        pixelSize: 17,
-
-        color:
-          Cesium.Color.YELLOW,
-
-        outlineColor:
-          Cesium.Color.BLACK,
-
-        outlineWidth: 3
-      },
-
-      label: {
-
-        text: "Aircraft",
-
-        font:
-          "bold 14px sans-serif",
-
-        fillColor:
-          Cesium.Color.YELLOW,
-
-        outlineColor:
-          Cesium.Color.BLACK,
-
-        outlineWidth: 3,
-
-        style:
-          Cesium.LabelStyle.FILL_AND_OUTLINE,
-
-        verticalOrigin:
-          Cesium.VerticalOrigin.BOTTOM,
-
-        pixelOffset:
-          new Cesium.Cartesian2(0, -18),
-
-        disableDepthTestDistance:
-          Number.POSITIVE_INFINITY
-      }
-    });
-
-
-  // ==========================================
-  // FLIGHT STATE
-  // ==========================================
-
-  let currentStopIndex = 0;
-
-  let flying = true;
-
-  let waitingAtStop = false;
-
-  let waitTimer = null;
-
-
-  // ==========================================
-  // GET AIRCRAFT POSITION
-  // ==========================================
-
-  function getAircraftPosition() {
-
-    return Cesium.Cartesian3.fromDegrees(
-      aircraftLongitude,
-      aircraftLatitude,
-      FLIGHT_HEIGHT
-    );
-  }
-
-
-  // ==========================================
-  // DISTANCE
-  // ==========================================
-
-  function distanceToStop(stop) {
-
-    const dx =
-      stop.longitude -
-      aircraftLongitude;
-
-    const dy =
-      stop.latitude -
-      aircraftLatitude;
-
-    return Math.sqrt(
-      dx * dx +
-      dy * dy
-    );
-  }
-
-
-  // ==========================================
-  // MOVE AIRCRAFT
-  // ==========================================
-
-  function moveAircraft() {
-
-    if (!flying || waitingAtStop) {
-      return;
-    }
-
-    if (
-      currentStopIndex >=
-      flightStops.length
-    ) {
-
-      finishFlight();
-
-      return;
-    }
-
-
-    const stop =
-      flightStops[currentStopIndex];
-
-
-    const dx =
-      stop.longitude -
-      aircraftLongitude;
-
-    const dy =
-      stop.latitude -
-      aircraftLatitude;
-
-
-    const distance =
-      Math.sqrt(
-        dx * dx +
-        dy * dy
-      );
-
-
-    // ========================================
-    // ARRIVAL
-    // ========================================
-
-    if (
-      distance <=
-      ARRIVAL_DISTANCE
-    ) {
-
-      // IMPORTANT:
-      // Put the aircraft EXACTLY on
-      // the company's coordinates.
-
-      aircraftLongitude =
-        stop.longitude;
-
-      aircraftLatitude =
-        stop.latitude;
-
-
-      aircraft.position =
-        getAircraftPosition();
-
-
-      arriveAtStop();
-
-      return;
-    }
-
-
-    // ========================================
-    // NORMAL MOVEMENT
-    // ========================================
-
-    const directionX =
-      dx / distance;
-
-    const directionY =
-      dy / distance;
-
-
-    let movement =
-      FLIGHT_SPEED;
-
-
-    // Prevent overshooting the destination
-    if (movement >= distance) {
-      movement = distance;
-    }
-
-
-    aircraftLongitude +=
-      directionX * movement;
-
-    aircraftLatitude +=
-      directionY * movement;
-
-
-    aircraft.position =
-      getAircraftPosition();
-
-
-    // ========================================
-    // CAMERA FOLLOWS AIRCRAFT
-    // ========================================
-
-    viewer.camera.lookAt(
-      getAircraftPosition(),
-
-      new Cesium.HeadingPitchRange(
-        0,
-
-        Cesium.Math.toRadians(-35),
-
-        18000
-      )
-    );
-
-  }
-
-
-  // ==========================================
-  // ARRIVAL
-  // ==========================================
-
-  function arriveAtStop() {
-
-    const stop =
-      flightStops[currentStopIndex];
-
-
-    waitingAtStop = true;
-
-
-    if (message) {
-
-      message.textContent =
-        `Arrived at ${stop.name}`;
-
-    }
-
-
-    // Select company
-    viewer.selectedEntity =
-      companyEntities[
-        currentStopIndex
-      ];
-
-
-    // Zoom in closer
-    viewer.camera.lookAt(
-      getAircraftPosition(),
-
-      new Cesium.HeadingPitchRange(
-        0,
-
-        Cesium.Math.toRadians(-35),
-
-        5000
-      )
-    );
-
-
-    // Wait before continuing
-    waitTimer =
-      setTimeout(() => {
-
-        waitingAtStop = false;
-
-        currentStopIndex++;
-
-
-        if (
-          currentStopIndex >=
-          flightStops.length
-        ) {
-
-          finishFlight();
-
-        } else {
-
-          const nextStop =
-            flightStops[
-              currentStopIndex
-            ];
-
-
-          if (message) {
-
-            message.textContent =
-              `Flying to ${nextStop.name}...`;
-
-          }
-
-        }
-
-      }, STOP_TIME);
-
-  }
-
-
-  // ==========================================
-  // FINISH
-  // ==========================================
-
-  function finishFlight() {
-
-    flying = false;
-
-    waitingAtStop = false;
-
-
-    if (message) {
-
-      message.textContent =
-        "Flight complete — all internship stops visited.";
-
-    }
-
-
-    viewer.camera.lookAt(
-      getAircraftPosition(),
-
-      new Cesium.HeadingPitchRange(
-        0,
-
-        Cesium.Math.toRadians(-35),
-
-        8000
-      )
-    );
-
-  }
-
-
-  // ==========================================
-  // RESET
-  // ==========================================
-
-  function resetFlight() {
-
-    if (waitTimer) {
-
-      clearTimeout(waitTimer);
-
-      waitTimer = null;
-    }
-
-
-    currentStopIndex = 0;
-
-    aircraftLongitude =
-      START_LOCATION.longitude;
-
-    aircraftLatitude =
-      START_LOCATION.latitude;
-
-
-    aircraft.position =
-      getAircraftPosition();
-
-
-    flying = true;
-
-    waitingAtStop = false;
-
-
-    viewer.selectedEntity =
-      undefined;
-
-
-    // Start camera directly over Penske
-    viewer.camera.flyTo({
-
-      destination:
-        Cesium.Cartesian3.fromDegrees(
-          START_LOCATION.longitude,
-          START_LOCATION.latitude,
-          5000
-        ),
-
-      duration: 2
-    });
-
-
-    if (message) {
-
-      message.textContent =
-        "Starting at Penske Truck Leasing...";
-
-    }
-
-  }
-
-
-  // ==========================================
-  // FLY BUTTON
-  // ==========================================
-
-  const flyButton =
-    document.getElementById("fly");
-
-
-  if (flyButton) {
-
-    flyButton.addEventListener(
-      "click",
-      () => {
-
-        flying = true;
-
-        waitingAtStop = false;
-
-
-        if (message) {
-
-          message.textContent =
-            `Flying to ${flightStops[currentStopIndex].name}...`;
-
-        }
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // PAUSE BUTTON
-  // ==========================================
-
-  const pauseButton =
-    document.getElementById("pause");
-
-
-  if (pauseButton) {
-
-    pauseButton.addEventListener(
-      "click",
-      () => {
-
-        flying = false;
-
-
-        if (message) {
-
-          message.textContent =
-            "Flight paused.";
-
-        }
-
-      }
-    );
-
-  }
-
-
-  // ==========================================
-  // RESET BUTTON
-  // ==========================================
-
-  const resetButton =
-    document.getElementById("reset");
-
-
-  if (resetButton) {
-
-    resetButton.addEventListener(
-      "click",
-      resetFlight
-    );
-
-  }
-
-
-  // ==========================================
-  // CLICK COMPANY MARKERS
-  // ==========================================
-
-  viewer.screenSpaceEventHandler.setInputAction(
-
-    (movement) => {
-
-      const picked =
-        viewer.scene.pick(
-          movement.position
-        );
-
-
-      if (
-        Cesium.defined(picked) &&
-        picked.id
-      ) {
-
-        viewer.selectedEntity =
-          picked.id;
-
-      }
-
-    },
-
-    Cesium.ScreenSpaceEventType.LEFT_CLICK
-
-  );
-
-
-  // ==========================================
-  // START CAMERA
-  // ==========================================
-
-  viewer.camera.setView({
-
-    destination:
-      Cesium.Cartesian3.fromDegrees(
-        START_LOCATION.longitude,
-        START_LOCATION.latitude,
-        5000
-      )
-
-  });
-
-
-  // ==========================================
-  // START MESSAGE
-  // ==========================================
-
-  if (message) {
-
-    message.textContent =
-      "Starting at Penske Truck Leasing...";
-
-  }
-
-
-  // ==========================================
-  // FLIGHT LOOP
-  // ==========================================
-
-  viewer.clock.onTick.addEventListener(
+  position: new Cesium.CallbackPositionProperty(
     () => {
+      return Cesium.Cartesian3.fromDegrees(
+        aircraftLongitude,
+        aircraftLatitude,
+        FLIGHT_HEIGHT
+      );
+    },
+    false
+  ),
 
-      moveAircraft();
+  point: {
+    pixelSize: 18,
 
-    }
+    color: Cesium.Color.YELLOW,
+
+    outlineColor: Cesium.Color.BLACK,
+    outlineWidth: 3,
+
+    disableDepthTestDistance: Number.POSITIVE_INFINITY
+  },
+
+  label: {
+    text: "Aircraft",
+
+    font: "15px sans-serif",
+
+    fillColor: Cesium.Color.YELLOW,
+
+    outlineColor: Cesium.Color.BLACK,
+    outlineWidth: 4,
+
+    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+
+    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+
+    pixelOffset: new Cesium.Cartesian2(0, -22),
+
+    disableDepthTestDistance: Number.POSITIVE_INFINITY
+  }
+});
+
+// ------------------------------------------
+// HELPER: AIRCRAFT CARTESIAN POSITION
+// ------------------------------------------
+
+function getAircraftPosition() {
+  return Cesium.Cartesian3.fromDegrees(
+    aircraftLongitude,
+    aircraftLatitude,
+    FLIGHT_HEIGHT
+  );
+}
+
+// ------------------------------------------
+// DISTANCE BETWEEN TWO LOCATIONS
+// ------------------------------------------
+
+function distanceBetween(
+  longitude1,
+  latitude1,
+  longitude2,
+  latitude2
+) {
+  const lon1 = Cesium.Math.toRadians(longitude1);
+  const lat1 = Cesium.Math.toRadians(latitude1);
+
+  const lon2 = Cesium.Math.toRadians(longitude2);
+  const lat2 = Cesium.Math.toRadians(latitude2);
+
+  const x =
+    (lon2 - lon1) *
+    Math.cos((lat1 + lat2) / 2);
+
+  const y = lat2 - lat1;
+
+  const earthRadius = 6371000;
+
+  return (
+    Math.sqrt(x * x + y * y) *
+    earthRadius
+  );
+}
+
+// ------------------------------------------
+// MOVE AIRCRAFT
+// ------------------------------------------
+
+function moveAircraft(deltaSeconds) {
+
+  if (!flying) {
+    return;
+  }
+
+  // If the aircraft is currently paused at a company,
+  // wait until the pause has finished.
+  if (Date.now() < stopPauseUntil) {
+    return;
+  }
+
+  const destination = flightStops[currentStopIndex];
+
+  const distance = distanceBetween(
+    aircraftLongitude,
+    aircraftLatitude,
+    destination.longitude,
+    destination.latitude
   );
 
-})();
+  // ----------------------------------------
+  // ARRIVAL
+  // ----------------------------------------
+
+  if (distance <= 5) {
+
+    // IMPORTANT:
+    // Put the aircraft EXACTLY on the destination.
+    // This prevents it from skipping past the marker.
+    aircraftLongitude = destination.longitude;
+    aircraftLatitude = destination.latitude;
+
+    arriveAtStop();
+
+    return;
+  }
+
+  // ----------------------------------------
+  // CALCULATE DIRECTION
+  // ----------------------------------------
+
+  const longitudeDifference =
+    destination.longitude - aircraftLongitude;
+
+  const latitudeDifference =
+    destination.latitude - aircraftLatitude;
+
+  const directionLength = Math.sqrt(
+    longitudeDifference * longitudeDifference +
+    latitudeDifference * latitudeDifference
+  );
+
+  if (directionLength === 0) {
+    return;
+  }
+
+  const directionLongitude =
+    longitudeDifference / directionLength;
+
+  const directionLatitude =
+    latitudeDifference / directionLength;
+
+  // ----------------------------------------
+  // TIME-BASED MOVEMENT
+  // ----------------------------------------
+
+  // Instead of moving a fixed amount every frame,
+  // calculate movement using elapsed time.
+  //
+  // This means the aircraft speed stays consistent
+  // even if the browser goes from 60 FPS to 30 FPS.
+  const metersThisFrame =
+    FLIGHT_SPEED * deltaSeconds;
+
+  // Convert meters into approximate latitude/longitude
+  // movement.
+  const degreesPerMeter = 1 / 111320;
+
+  let movementDegrees =
+    metersThisFrame * degreesPerMeter;
+
+  // ----------------------------------------
+  // NEVER OVERSHOOT
+  // ----------------------------------------
+
+  const remainingDegrees =
+    directionLength;
+
+  if (movementDegrees >= remainingDegrees) {
+    movementDegrees = remainingDegrees;
+  }
+
+  aircraftLongitude +=
+    directionLongitude * movementDegrees;
+
+  aircraftLatitude +=
+    directionLatitude * movementDegrees;
+}
+
+// ------------------------------------------
+// ARRIVE AT COMPANY
+// ------------------------------------------
+
+function arriveAtStop() {
+
+  const stop = flightStops[currentStopIndex];
+
+  flying = false;
+
+  stopPauseUntil =
+    Date.now() + STOP_TIME;
+
+  document.getElementById("message").textContent =
+    `Arrived at ${stop.name}.`;
+
+  document.getElementById("readout").innerHTML = `
+    <strong>${stop.name}</strong><br>
+    ${stop.city}<br>
+    ${stop.internship}
+  `;
+
+  // ----------------------------------------
+  // CLOSE CAMERA VIEW
+  // ----------------------------------------
+
+  cameraFollowing = false;
+
+  viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(
+      stop.longitude,
+      stop.latitude,
+      3500
+    ),
+
+    orientation: {
+      heading: 0,
+
+      pitch: Cesium.Math.toRadians(-35),
+
+      roll: 0
+    },
+
+    duration: 1.5
+  });
+
+  // ----------------------------------------
+  // SELECT COMPANY
+  // ----------------------------------------
+
+  viewer.selectedEntity =
+    companyEntities[currentStopIndex];
+
+  // ----------------------------------------
+  // AUTOMATICALLY CONTINUE
+  // ----------------------------------------
+
+  setTimeout(() => {
+
+    // Make sure we're still at the same stop.
+    if (
+      currentStopIndex <
+      flightStops.length - 1
+    ) {
+
+      currentStopIndex++;
+
+      flying = true;
+
+      lastFrameTime = null;
+
+      cameraFollowing = true;
+
+      document.getElementById("message").textContent =
+        `Flying to ${flightStops[currentStopIndex].name}...`;
+
+      viewer.selectedEntity = undefined;
+    }
+
+  }, STOP_TIME);
+}
+
+// ------------------------------------------
+// START FLIGHT
+// ------------------------------------------
+
+function startFlight() {
+
+  if (
+    currentStopIndex >=
+    flightStops.length
+  ) {
+    return;
+  }
+
+  flying = true;
+
+  lastFrameTime = null;
+
+  cameraFollowing = true;
+
+  document.getElementById("message").textContent =
+    `Flying to ${flightStops[currentStopIndex].name}...`;
+
+  viewer.selectedEntity = undefined;
+}
+
+// ------------------------------------------
+// PAUSE FLIGHT
+// ------------------------------------------
+
+function pauseFlight() {
+
+  flying = false;
+
+  cameraFollowing = false;
+
+  document.getElementById("message").textContent =
+    "Flight paused.";
+}
+
+// ------------------------------------------
+// RESET FLIGHT
+// ------------------------------------------
+
+function resetFlight() {
+
+  flying = false;
+
+  currentStopIndex = 0;
+
+  stopPauseUntil = 0;
+
+  cameraFollowing = false;
+
+  aircraftLongitude =
+    flightStops[0].longitude;
+
+  aircraftLatitude =
+    flightStops[0].latitude;
+
+  document.getElementById("message").textContent =
+    `Ready at ${flightStops[0].name}.`;
+
+  document.getElementById("readout").textContent =
+    `${flightStops[0].city} • ${flightStops[0].internship}`;
+
+  viewer.selectedEntity = undefined;
+
+  viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(
+      flightStops[0].longitude,
+      flightStops[0].latitude,
+      5000
+    ),
+
+    orientation: {
+      heading: 0,
+
+      pitch: Cesium.Math.toRadians(-35),
+
+      roll: 0
+    },
+
+    duration: 1.5
+  });
+}
+
+// ------------------------------------------
+// CAMERA FOLLOW
+// ------------------------------------------
+
+function updateCamera() {
+
+  // IMPORTANT:
+  // We only update the camera while the flight is
+  // actively following the aircraft.
+  //
+  // This means when the aircraft reaches a company,
+  // you can manually zoom and explore the buildings.
+
+  if (!cameraFollowing || !flying) {
+    return;
+  }
+
+  const aircraftPosition =
+    getAircraftPosition();
+
+  viewer.camera.lookAt(
+    aircraftPosition,
+
+    new Cesium.HeadingPitchRange(
+      0,
+
+      Cesium.Math.toRadians(-35),
+
+      FOLLOW_CAMERA_DISTANCE
+    )
+  );
+}
+
+// ------------------------------------------
+// CESIUM FRAME LOOP
+// ------------------------------------------
+
+viewer.clock.onTick.addEventListener(() => {
+
+  const now = performance.now();
+
+  // First frame
+  if (lastFrameTime === null) {
+    lastFrameTime = now;
+    return;
+  }
+
+  // Time since previous frame
+  let deltaSeconds =
+    (now - lastFrameTime) / 1000;
+
+  lastFrameTime = now;
+
+  // Prevent giant jumps if the browser tab
+  // was inactive for a while.
+  deltaSeconds =
+    Math.min(deltaSeconds, 0.1);
+
+  moveAircraft(deltaSeconds);
+
+  updateCamera();
+});
+
+// ------------------------------------------
+// BUTTONS
+// ------------------------------------------
+
+document
+  .getElementById("fly")
+  .addEventListener(
+    "click",
+    startFlight
+  );
+
+document
+  .getElementById("pause")
+  .addEventListener(
+    "click",
+    pauseFlight
+  );
+
+document
+  .getElementById("reset")
+  .addEventListener(
+    "click",
+    resetFlight
+  );
+
+// ------------------------------------------
+// INITIAL CAMERA
+// ------------------------------------------
+
+resetFlight();
