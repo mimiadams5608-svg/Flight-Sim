@@ -6,7 +6,7 @@
   // Reading, Pennsylvania Internship Flight
   // ==========================================
 
-  Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IlJrYXozVzlic2x6eU5NSlYiLCJqdGkiOiJhNzcwMDAyZC1lYWI4LTQ3NTctOWI1OS1mMDhhMGViNWU4MjciLCJpZCI6NTA1NzM0LCJzdWIiOiJtaW1pMyIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiJtaW1pM19kZWZhdWx0IiwiaWF0IjoxNzkxMjUwNTQ2fQ.lvsj1owqres_vF8j2dk2Hgakt_ju4fLcYudR7PfGU6w";
+  Cesium.Ion.defaultAccessToken = "";
 
   // ==========================================
   // FLIGHT STOPS
@@ -861,42 +861,129 @@ if (heading >= 360) {
   }
 
   // ==========================================
-  // CAMERA
-  // ==========================================
+// CAMERA
+// ==========================================
 
-  function updateCamera() {
+function updateCamera() {
 
-    if (
-      !cameraFollowing ||
-      !flying
-    ) {
+  if (
+    !cameraFollowing ||
+    !flying
+  ) {
 
-      return;
+    return;
+
+  }
+
+  const aircraftPosition =
+    getAircraftPosition();
+
+  viewer.camera.lookAt(
+
+    aircraftPosition,
+
+    new Cesium.HeadingPitchRange(
+
+      Cesium.Math.toRadians(
+        heading
+      ),
+
+      Cesium.Math.toRadians(-35),
+
+      FOLLOW_CAMERA_DISTANCE
+
+    )
+
+  );
+
+}
+
+
+// ==========================================
+// FREE CAMERA CONTROL DURING FLIGHT
+// ==========================================
+
+// Create a camera input handler
+const cameraHandler =
+  new Cesium.ScreenSpaceEventHandler(
+    viewer.scene.canvas
+  );
+
+
+// ------------------------------------------
+// MOUSE DRAG
+// ------------------------------------------
+
+// Clicking and dragging the globe releases
+// the automatic aircraft-follow camera.
+cameraHandler.setInputAction(
+  () => {
+
+    if (flying) {
+
+      cameraFollowing = false;
 
     }
 
-    const aircraftPosition =
-      getAircraftPosition();
+  },
+  Cesium.ScreenSpaceEventType.LEFT_DOWN
+);
 
-    viewer.camera.lookAt(
 
-      aircraftPosition,
+// ------------------------------------------
+// MIDDLE MOUSE BUTTON
+// ------------------------------------------
 
-      new Cesium.HeadingPitchRange(
+cameraHandler.setInputAction(
+  () => {
 
-        Cesium.Math.toRadians(
-          heading
-        ),
+    if (flying) {
 
-        Cesium.Math.toRadians(-35),
+      cameraFollowing = false;
 
-        FOLLOW_CAMERA_DISTANCE
+    }
 
-      )
+  },
+  Cesium.ScreenSpaceEventType.MIDDLE_DOWN
+);
 
-    );
 
-  }
+// ------------------------------------------
+// RIGHT MOUSE BUTTON
+// ------------------------------------------
+
+cameraHandler.setInputAction(
+  () => {
+
+    if (flying) {
+
+      cameraFollowing = false;
+
+    }
+
+  },
+  Cesium.ScreenSpaceEventType.RIGHT_DOWN
+);
+
+
+// ------------------------------------------
+// ZOOM
+// ------------------------------------------
+
+// Using the mouse wheel releases the automatic
+// follow camera so you can zoom while flying.
+cameraHandler.setInputAction(
+  () => {
+
+    if (flying) {
+
+      cameraFollowing = false;
+
+    }
+
+  },
+  Cesium.ScreenSpaceEventType.WHEEL
+);
 
   // ==========================================
   // SPEED CONTROL
