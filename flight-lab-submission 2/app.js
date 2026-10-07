@@ -11,68 +11,73 @@
   // ==========================================
   // FLIGHT STOPS
   // ==========================================
+const flightStops = [
+  {
+    name: "Penske Truck Leasing",
+    city: "Reading, PA",
+    internship: "2027 Corporate Internship — Information Systems",
+    description:
+      "Penske Truck Leasing offers corporate internship opportunities in Information Systems and technology. This stop represents Penske's Reading-area corporate location and connects the flight to information systems, business technology, and computer science.",
+    longitude: -75.8730,
+    latitude: 40.3027,
+    careerLink: "https://www.penske.com/careers/"
+  },
 
-  const flightStops = [
-    {
-      name: "Penske Truck Leasing",
-      city: "Reading, PA",
-      internship: "2027 Corporate Internship — Information Systems",
-      description:
-        "Penske Truck Leasing offers corporate internship opportunities in Information Systems and technology. This stop represents Penske's Reading-area corporate location and connects the flight to information systems, business technology, and computer science.",
-      longitude: -75.8730,
-      latitude: 40.3027
-    },
+  {
+    name: "Hubbell",
+    city: "Reading, PA",
+    internship: "2027 Engineering / Technology Internship",
+    description:
+      "Hubbell offers 2027 internship opportunities in engineering and technology-related areas. Students can apply technical, analytical, and problem-solving skills in a professional environment. This stop represents Hubbell's Reading facility.",
+    longitude: -75.9387,
+    latitude: 40.3787,
+    careerLink: "https://careers.hubbell.com/go/GRP-Internship/4281900/"
+  },
 
-    {
-      name: "Hubbell",
-      city: "Reading, PA",
-      internship: "2027 Engineering / Technology Internship",
-      description:
-        "Hubbell offers 2027 internship opportunities in engineering and technology-related areas. Students can apply technical, analytical, and problem-solving skills in a professional environment. This stop represents Hubbell's Reading facility.",
-      longitude: -75.9387,
-      latitude: 40.3787
-    },
+  {
+    name: "Fidelity Technologies",
+    city: "Reading, PA",
+    internship: "Technology, Engineering & Simulation",
+    description:
+      "Fidelity Technologies is a Reading-based technology and engineering company working with simulation, training systems, software, engineering, and technical solutions.",
+    longitude: -75.9248,
+    latitude: 40.3822,
+    careerLink: "https://fidelitytech.com/careers/"
+  },
 
-    {
-      name: "Fidelity Technologies",
-      city: "Reading, PA",
-      internship: "Technology, Engineering & Simulation",
-      description:
-        "Fidelity Technologies is a Reading-based technology and engineering company working with simulation, training systems, software, engineering, and technical solutions.",
-      longitude: -75.9248,
-      latitude: 40.3822
-    },
+  {
+    name: "EnerSys Global Technology Center",
+    city: "Reading, PA",
+    internship: "Engineering, Information Technology & Technology",
+    description:
+      "EnerSys operates its Global Technology Center in Reading. The facility supports engineering, product development, testing, energy-storage technology, electronics, software, and related technical work.",
+    longitude: -75.9456,
+    latitude: 40.3825,
+    careerLink: "https://www.enersys.com/en/careers/"
+  },
 
-    {
-      name: "EnerSys Global Technology Center",
-      city: "Reading, PA",
-      internship: "Engineering, Information Technology & Technology",
-      description:
-        "EnerSys operates its Global Technology Center in Reading. The facility supports engineering, product development, testing, energy-storage technology, electronics, software, and related technical work.",
-      longitude: -75.9456,
-      latitude: 40.3825
-    },
+  {
+    name: "Materion",
+    city: "Leesport, PA",
+    internship: "2027 Summer Internship Program",
+    description:
+      "Materion's 2027 Summer Internship Program includes opportunities connected to Information Technology, Computer Science, and Data Science.",
+    longitude: -75.9685,
+    latitude: 40.4498,
+    careerLink: "https://www.materion.com/careers"
+  },
 
-    {
-      name: "Materion",
-      city: "Leesport, PA",
-      internship: "2027 Summer Internship Program",
-      description:
-        "Materion's 2027 Summer Internship Program includes opportunities connected to Information Technology, Computer Science, and Data Science.",
-      longitude: -75.9685,
-      latitude: 40.4498
-    },
-
-    {
-      name: "East Penn Manufacturing",
-      city: "Lyon Station, PA",
-      internship: "IT Cybersecurity Internship — Summer 2027",
-      description:
-        "East Penn Manufacturing offers IT and cybersecurity opportunities involving networking, operating systems, information technology, and cybersecurity.",
-      longitude: -76.0037,
-      latitude: 40.5247
-    }
-  ];
+  {
+    name: "East Penn Manufacturing",
+    city: "Lyon Station, PA",
+    internship: "IT Cybersecurity Internship — Summer 2027",
+    description:
+      "East Penn Manufacturing offers IT and cybersecurity opportunities involving networking, operating systems, information technology, and cybersecurity.",
+    longitude: -76.0037,
+    latitude: 40.5247,
+    careerLink: "https://www.eastpennmanufacturing.com/employment/"
+  }
+];  
 
   // ==========================================
   // VIEWER
@@ -232,23 +237,42 @@ const FOLLOW_CAMERA_DISTANCE = 9000;
           Number.POSITIVE_INFINITY
       },
 
-      description: `
-        <h2>${stop.name}</h2>
+     description: `
+  <h2>${stop.name}</h2>
 
-        <p>
-          <strong>Location:</strong>
-          ${stop.city}
-        </p>
+  <p>
+    <strong>Location:</strong>
+    ${stop.city}
+  </p>
 
-        <p>
-          <strong>Opportunity:</strong>
-          ${stop.internship}
-        </p>
+  <p>
+    <strong>Opportunity:</strong>
+    ${stop.internship}
+  </p>
 
-        <p>
-          ${stop.description}
-        </p>
-      `
+  <p>
+    ${stop.description}
+  </p>
+
+  <p>
+    <a
+      href="${stop.careerLink}"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display: inline-block;
+        padding: 8px 12px;
+        background: #1e88e5;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+      "
+    >
+      View Internship Opportunities
+    </a>
+  </p>
+`
     });
 
     companyEntities.push(entity);
