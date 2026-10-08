@@ -53,7 +53,7 @@ const flightStops = [
       "EnerSys operates its Global Technology Center in Reading. The facility supports engineering, product development, testing, energy-storage technology, electronics, software, and related technical work.",
     longitude: -75.9456,
     latitude: 40.3825,
-    careerLink: "https://www.enersys.com/en/careers/"
+    careerLink: "https://jobs.enersys.com/"
   },
 
   {
